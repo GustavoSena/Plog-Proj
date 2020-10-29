@@ -66,7 +66,13 @@ finalBoard([
         Para a visualizaçao do tabuleiro foi implementado o predicado "displayBoard" que tem como objetivo mostrar o estado do jogo, percorrendo de forma recursiva as listas existentes, e imprimindo todos os elementos.
 
 - Inicial Board:
+<br>
+![InicialBoard](./imagens/initialBoard.png)
 
 - Middle Board:
+<br>
+![MiddleBoard](./imagens/middleBoard.png)
 
 - Final Board:
+<br>
+![FinalBoard](./imagens/finalBoard.png)
