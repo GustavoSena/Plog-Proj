@@ -75,9 +75,9 @@ middleBoard([
 finalBoard([
     [[black], [white,black], [black], [black,white], [black,white]], 
     [[white,black], [white,black], [black,white,black], [black,white], [white]], 
-    [[white], [black,white,black], [black,white,white], [white], [black,white]], 
-    [[white,black,white], [white,black], [white,black], [white,black,white], [black]], 
-    [[black,white], [black], [white], [white], [white]]
+    [[white], [black,white,black], [black,white,white], [white], [white,white]], 
+    [[black,black,white], [white,black,white,black], [white,black], [black,black,white], [white,black,white,black]], 
+    [[black,white], [white], [white,black,white], [white], [black]]
 ]).
 
 
