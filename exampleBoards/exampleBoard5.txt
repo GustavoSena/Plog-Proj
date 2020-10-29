@@ -247,3 +247,126 @@ finalBoard([
     [[white,black,white], [white,black], [white,black], [white,black,white], [black]], 
     [[black,white], [black], [white], [white], [white]]
 ]).
+
+
+/White/
+
+finalBoard([
+    [[black], [white,black], [black], [black,white], [black,white]], 
+    [[white,black], [white,black], [black,white,black], [black,white], [white]], 
+    [[white], [black,white,black], [black,white,white], [white], [black,white]], 
+    [[white,black,white], [white,black], [white,black], [white,black,white], [white,black]], 
+    [[black,white], [black], [white], [white], [black]]
+]).
+
+
+/Black/
+
+
+finalBoard([
+    [[black], [white,black], [black], [black,white], [black,white]], 
+    [[white,black], [white,black], [black,white,black], [black,white], [white]], 
+    [[white], [black,white,black], [black,white,white], [white], [white,white]], 
+    [[white,black,white], [white,black], [white,black], [white,black,white], [black,white,black]], 
+    [[black,white], [black], [white], [white], [black]]
+]).
+
+
+
+/White/
+
+
+finalBoard([
+    [[black], [white,black], [black], [black,white], [black,white]], 
+    [[white,black], [white,black], [black,white,black], [black,white], [white]], 
+    [[white], [black,white,black], [black,white,white], [white], [white,white]], 
+    [[white,black,white], [white,black], [white,black], [black,black,white], [white,black,white,black]], 
+    [[black,white], [black], [white], [white], [black]]
+]).
+
+
+
+
+
+/Black/
+
+
+finalBoard([
+    [[black], [white,black], [black], [black,white], [black,white]], 
+    [[white,black], [white,black], [black,white,black], [black,white], [white]], 
+    [[white], [black,white,black], [black,white,white], [white], [white,white]], 
+    [[white,black,white], [white,black], [white,black], [black,black,white], [white,black,white,black]], 
+    [[black,white], [white], [black,white], [white], [black]]
+]).
+
+
+
+/White/
+
+finalBoard([
+    [[black], [white,black], [black], [black,white], [black,white]], 
+    [[white,black], [white,black], [black,white,black], [black,white], [white]], 
+    [[white], [black,white,black], [black,white,white], [white], [white,white]], 
+    [[white,black,white], [white,black], [black,black], [black,black,white], [white,black,white,black]], 
+    [[black,white], [white], [white,black,white], [white], [black]]
+]).
+
+
+
+
+/Black/
+
+finalBoard([
+    [[black], [white,black], [black], [black,white], [black,white]], 
+    [[white,black], [white,black], [black,white,black], [black,white], [white]], 
+    [[white], [black,white,black], [black,white,white], [white], [white,white]], 
+    [[white,black,white], [black,white,black], [white,black], [black,black,white], [white,black,white,black]], 
+    [[black,white], [white], [white,black,white], [white], [black]]
+]).
+
+
+
+
+/White/
+
+finalBoard([
+    [[black], [white,black], [black], [black,white], [black,white]], 
+    [[white,black], [white,black], [black,white,black], [black,white], [white]], 
+    [[white], [black,white,black], [black,white,white], [white], [white,white]], 
+    [[black,black,white], [white,black,white,black], [white,black], [black,black,white], [white,black,white,black]], 
+    [[black,white], [white], [white,black,white], [white], [black]]
+]).
+
+
+
+/Black/
+
+
+finalBoard([
+    [[black], [white,black], [black], [black,white], [black,white]], 
+    [[white,black], [white,black], [black,white,black], [black,white], [white]], 
+    [[white], [black,white,black], [black,white,white], [white], [white,white]], 
+    [[black,black,white], [white,black,white,black], [white,black], [black,black,white], [white,black,white,black]], 
+    [[black,white], [white], [white,black,white], [white], [black]]
+]).
+
+
+
+/White/
+
+
+
+finalBoard([
+    [[black], [white,black], [black], [black,white], [black,white]], 
+    [[white,black], [white,black], [black,white,black], [black,white], [white]], 
+    [[white], [black,white,black], [black,white,white], [white], [white,white]], 
+    [[black,black,white], [white,black,white,black], [white,black], [black,black,white], [white,black,white,black]], 
+    [[black,white], [white], [white,black,white], [white], [black]]
+]).
+
+
+
+
+
+Black: 7/2
+White: 4/5/4
