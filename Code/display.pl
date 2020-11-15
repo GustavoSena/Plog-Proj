@@ -1,32 +1,55 @@
 
+generateBoard(Board,Size):-
+    RowN is Size,
+    generateBoard([],Board,RowN,Size).
 
-initialBoard([
-    [[white], [black], [white], [black], [white]], 
-    [[black], [white], [black], [white], [black]], 
-    [[white], [black], [white], [black], [white]], 
-    [[black], [white], [black], [white], [black]], 
-    [[white], [black], [white], [black], [white]]
-]).
+generateBoard(FinalBoard,FinalBoard,0,Size).
+
+generateBoard(InitBoard,FinalBoard,RowN,Size):-
+    generateRow([],Row,RowN,Size),
+    append(InitBoard,[Row],NewBoard),
+    NewRowN is RowN - 1,
+    generateBoard(NewBoard,FinalBoard,NewRowN,Size).
+
+generateRow(InitRow,FinalRow,0,Size).
+
+generateRow(FinalRow,FinalRow,Rown,0).
+
+generateRow(InitRow,FinalRow,RowN,Size):-
+    generateCell(Cell,RowN, Size),
+    append(InitRow,Cell,UpdatedRow),
+    NewSize is Size-1,
+    generateRow(UpdatedRow,FinalRow,RowN,NewSize).
+
+   
+generateCell(Cell,RowN,ColN) :-
+    (((RowN mod 2) =:= 0, (ColN mod 2) =\= 0) ; ((RowN mod 2) =\= 0, (ColN mod 2) =:= 0)), !,
+    Cell = [[black]].
+    
+
+generateCell(Cell,RowN,ColN) :-
+    Cell = [[white]].
 
 
-symbol(black,S) :- S='B'.
-symbol(white,S) :- S='W'.
-
-displayBoard(Board,Player):-
-    write('  | A | B | C | D | E |\n'),
-    write('--|---|---|---|---|---|\n'),
-    printBoard(0,Board),
+displayBoard(Board,Size,Player):-
+    printHead(Size),
+    printBar(Size+1),
+    printBoard(Size,0,Board),
     write('\nPlaying: '),
-    write(Player).
+    subsPlayer(Player,S),
+    write(S),
+    write('\n').
 
-printBoard(N,[X|L]):-
+printBoard(Size,N,[X|L]):-
     M is N+1,
+    write(' '),
     write(M),
     write(' |'),
     printLine(X),
-    write('\n--|---|---|---|---|---|\n'),
-    printBoard(M,L).  
-printBoard(M,[]).
+    write('\n'),
+    printBar(Size+1),
+    printBoard(Size,M,L).  
+printBoard(Size,M,[]).
 
 printLine([X|L]) :-
     printCell(X),
@@ -34,58 +57,61 @@ printLine([X|L]) :-
     printLine(L).
 
 printLine([]).
-printCell([X|L]) :- 
-    symbol(X,S),
+
+
+printCell(Cell):-
+    last(Cell,Color),
+    symbol(Color,S),
     write(S),
     write('-'),
-    printCell(1,L).
+    length(Cell,Size),
+    write(Size).
 
-printCell(N,[X|L]) :-
-    M is N+1,
-    printCell(M,L).
 
-printCell(F,[]):-
-    write(F).
+printBar(0):-
+    write('\n').
+
+printBar(Size):-
+    write('---|'),
+    NewSize is Size-1,
+    printBar(NewSize).
+
+
+
+printHead(Size):-
+    write('   |'),
+    printHead(Size,0).
+
+printHead(Size,Size):-
+    write('\n').
+
+printHead(Size,Index):-
+    write(' '),
+    NewIndex is Index+1,
+    subsHead(NewIndex,S),
+    write(S),
+    write(' |'),
+    printHead(Size, NewIndex).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
-
-
-
-
-
-
-
-
-
-
-/*White*/
-
-middleBoard([
-    [[black], [black], [white], [black], [white]], 
-    [[white,black], [black], [black,white,black], [white], [black]], 
-    [[white], [black,white,black], [black,white,white], [black], [white]], 
-    [[white,black,white], [white,black], [white,black], [white,black,white], [black]], 
-    [[black,white], [black], [white], [white], [white]]
-]).
-
-
-
-
-/*Black*/
-
-finalBoard([
-    [[black], [white,black], [black], [black,white], [black,white]], 
-    [[white,black], [white,black], [black,white,black], [black,white], [white]], 
-    [[white], [black,white,black], [black,white,white], [white], [white,white]], 
-    [[black,black,white], [white,black,white,black], [white,black], [black,black,white], [white,black,white,black]], 
-    [[black,white], [white], [white,black,white], [white], [black]]
-]).
-
-
-
-
-
-/*
-deleteFirst([X|L],R):-
-    R is L.
-    */
 
