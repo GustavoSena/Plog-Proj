@@ -1,0 +1,26 @@
+
+printCell(Cell):-
+    length(Cell,Size),
+    nth1(Size,Cell,Color),
+    symbol(Color,S),
+    write(S),
+    write('-'),
+    write(Size).
+
+        |
+        |
+        |
+        V
+
+printCell([X|L]) :- 
+    symbol(X,S),
+    write(S),
+    write('-'),
+    printCell(1,L).
+
+printCell(N,[X|L]) :-
+    M is N+1,
+    printCell(M,L).
+
+printCell(F,[]):-
+    write(F).

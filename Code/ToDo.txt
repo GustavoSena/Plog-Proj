@@ -1,0 +1,13 @@
+-funcao de input para o jogador passar
+-funcao para trocar a peça de cima
+-menu inicial onde se escolhe o tamanho da board
+-verificacao de final de jogo --- game_over(+GameState, -Winner)
+-verificar quem ganhou
+-juntar funcoes na game loop
+-ver lista de jogadas validas (descobrir como funciona) --- valid_moves(+GameState, +Player, -ListOfMoves)
+-implementar GameState
+-opcao de voltar atras a meio de input (opcional)
+
+Perguntar ao professor:
+    -Avaliação do tabuleiro?
+    -Lista de jogadas válidas?
