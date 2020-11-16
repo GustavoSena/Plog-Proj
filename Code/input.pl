@@ -1,5 +1,5 @@
 
-move(Player, Board, CurrColumn, CurrRow, NewColumn, NewRow) :-
+getMove(Player, Board, CurrColumn, CurrRow, NewColumn, NewRow) :-
     write('Player: '),
     subsPlayer(Player,S),
     write(S),

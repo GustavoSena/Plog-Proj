@@ -63,12 +63,15 @@ subsPlayer(white,S):-S='White'.
 subsPlayer(black,S):-S='Black'.
 
 
+nextPlayer([white], black).
+nextPlayer([black], white).
+
+currPlayer([white], white).
+currPlayer([black], black).
 
 replace_nth0(List, Index, OldElem, NewElem, NewList) :-
    nth0(Index,List,OldElem,Transfer),
    nth0(Index,NewList,NewElem,Transfer).
-
-
 
 
 deleteFirst([X|L],R):-
