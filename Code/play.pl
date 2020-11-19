@@ -5,9 +5,14 @@ play:-
 
 displayGame(Board,Size,Player):-
     displayBoard(Board,Size,Player),
-    getMove(Player, Board, CurrColumn, CurrRow, NewColumn, NewRow),
+    getMove(Player, Board, CurrColumn, CurrRow, NewColumn, NewRow, Skip),
+    ((Skip == 'n',
     move(Board, CurrColumn, CurrRow, NewBoard, NewColumn, NewRow),
-    displayBoard(NewBoard,Size,Player).
+    displayBoard(NewBoard,Size,Player))
+    ;
+    (Skip == 'y',
+    write('You skip turn!\n'),
+    displayBoard(Board,Size,Player))).
 
 /*gameLoop(Board, Player) :-
     getCoord(Player, Column, Rown).*/
