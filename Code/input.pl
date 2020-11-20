@@ -38,10 +38,6 @@ checkCurrCoord(Player,Board, CurrColumn, CurrRow) :-
     nth0(CurrRow,Board,RowList),
     nth0(CurrColumn,RowList,ColList),
     last(ColList,Color),
-    write(Color),
-    write('\n'),
-    write(Player),
-    write('\n'),
     Color = Player.
 
 checkCurrCoord(Player,Board, CurrColumn, CurrRow) :-
@@ -76,21 +72,27 @@ checkNewCoord(Player,Board,CurrColumn, CurrRow, NewColumn, NewRow) :-
     
 /*Gets a position*/
 getCoord(Column, Row, Size) :-
-    readColumn(Column),
-    validateColumn(Column, Size),
+    forColumn(Column, Size),
+    forRow(Row, Size).
 
+/*Get a coord for Column*/
+forColumn(Column, Size) :-
+    readColumn(Col),
+    validateColumn(Col, Column, Size).
+
+/*Get a coord for Row*/
+forRow(_Row, Size) :-
     readRow(NRow),
     Row is NRow-1,
-    validateRow(Row, Size).
+    validateRow(Row, _Row, Size).
 
 /*Reads the input column*/
 readColumn(Col) :-
     write('Choose the column:\n'),
-    get_char(Column),
+    get_char(Col),
     peek_char(Char),
     Char=='\n', !,
-    get_char(Char),
-    subsCol(Column,Col).
+    get_char(Char).
 
 readColumn(Col) :-
     readColumn(Col).
@@ -109,8 +111,7 @@ readAnswer(Answer) :-
 /*Reads the input row*/
 readRow(Row) :-
     write('Choose the row:\n'),
-    get_code(RowC),
-    subsRow(RowC,Row),
+    get_code(Row),
     peek_char(Char),
     Char=='\n', !,
     get_char(Char).
@@ -119,25 +120,24 @@ readRow(Row) :-
     readRow(Row).
 
 /*If the Column is valid*/
-validateColumn(Column, Size) :-
-    Column < Size, !.
+validateColumn(Column, _Column, Size) :-
+    subsCol(Column,_Column),
+    _Column < Size, !.
     
 /*If the Column is not valid*/
-validateColumn(Column, Size) :-
+validateColumn(Column, _Column, Size) :-
     write('Invalid column!\n'),
-    readColumn(NewColumn),
-    validateColumn(NewColumn, Size).
+    forColumn(_Column, Size).
 
 
 /*If the Row is valid*/
-validateRow(Row, Size) :-
-    Row < Size, !.
+validateRow(Row, _Row, Size) :-
+    subsRow(Row,_Row),
+    _Row < Size, !.
 /*If the Row is not valid*/
-validateRow(Row, Size) :-
+validateRow(Row, _Row, Size) :-
     write('Invalid row!\n'),
-    readRow(NRow),
-    Row is NRow-1,
-    validateRow(Row, Size).
+    forRow(_Row, Size).
 
 /*If the answer from the user is valid*/
 validateAnswer(Answer) :- 
