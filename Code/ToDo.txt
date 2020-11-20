@@ -1,4 +1,4 @@
--funcao de input para o jogador passar
+MARIA (DONE) -funcao de input para o jogador passar
 MARIA (DONE) -funcao para trocar a peça de cima
 -menu inicial onde se escolhe o tamanho da board
 -verificacao de final de jogo --- game_over(+GameState, -Winner)
