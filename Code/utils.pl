@@ -74,5 +74,10 @@ replace_nth0(List, Index, OldElem, NewElem, NewList) :-
    nth0(Index,NewList,NewElem,Transfer).
 
 
+getCellColor(Board,Col,Row,Color):-
+   nth0(Row,Board,RowList),
+   nth0(Col,RowList,ColorList),
+   last(ColorList,Color).
+
 deleteFirst([X|L],R):-
     R is L.

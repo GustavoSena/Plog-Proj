@@ -31,7 +31,9 @@ generateCell(Cell,RowN,ColN) :-
     Cell = [[white]].
 
 
-displayBoard(Board,Size,Player):-
+displayGame(GameState,Player):-
+    Board = GameState,
+    length(Board,Size),
     printHead(Size),
     printBar(Size+1),
     printBoard(Size,0,Board),
@@ -39,6 +41,7 @@ displayBoard(Board,Size,Player):-
     subsPlayer(Player,S),
     write(S),
     write('\n').
+
 
 printBoard(Size,N,[X|L]):-
     M is N+1,

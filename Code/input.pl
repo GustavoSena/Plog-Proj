@@ -1,9 +1,5 @@
 
 getMove(Player, Board, CurrColumn, CurrRow, NewColumn, NewRow, Answer) :-
-    write('Player: '),
-    subsPlayer(Player,S),
-    write(S),
-    write('s turn!\n'),
     skip(Answer),
     ((Answer == 'n',
     getCurrPiece(Player, Board, CurrColumn, CurrRow),
@@ -45,11 +41,13 @@ checkCurrCoord(Player,Board, CurrColumn, CurrRow) :-
 
 /*Checks the new position*/ 
 checkNewCoord(Player,Board,CurrColumn, CurrRow, NewColumn, NewRow):-
+    write(CurrColumn-CurrRow-NewColumn-NewRow), write('\n'),
     /*Checks if the piece belong to the player*/
     nth0(NewRow,Board,RowList),
     nth0(NewColumn,RowList,ColList),
     last(ColList,Color),
     Color \= Player,
+    write(Color-Player),write('\n'),
 
     /*Checks if the two stacks are the same size*/
     nth0(CurrRow,Board,OldRow),
@@ -59,16 +57,22 @@ checkNewCoord(Player,Board,CurrColumn, CurrRow, NewColumn, NewRow):-
     CurrSize = NewSize,
 
     /*Checks if the position is adjacent*/
+    /*(
+        (CurrColumn =:= NewColumn , CurrRow+1=:=NewRow,(write(CurrColumn-CurrRow-NewColumn-NewRow), write('\n'))) ;  
+        (CurrColumn =:= NewColumn , CurrRow-1=:=NewRow,(write(CurrColumn-CurrRow-NewColumn-NewRow), write('\n'))) ; 
+        (CurrColumn+1 =:= NewColumn , CurrRow=:=NewRow,(write(CurrColumn-CurrRow-NewColumn-NewRow), write('\n'))) ; 
+        (CurrColumn-1 =:= NewColumn , CurrRow=:=NewRow,(write(CurrColumn-CurrRow-NewColumn-NewRow), write('\n')))
+    );*/
+
     (
-        (CurrColumn =:= NewColumn , CurrRow+1=:=NewRow) ;  
-        (CurrColumn =:= NewColumn , CurrRow-1=:=NewRow) ; 
-        (CurrColumn+1 =:= NewColumn , CurrRow=:=NewRow) ; 
-        (CurrColumn-1 =:= NewColumn , CurrRow=:=NewRow)
-    ).
+        abs(CurrColumn-NewColumn)=:=0 , abs(CurrRow-NewRow)=:=1;  
+        abs(CurrColumn-NewColumn)=:=0 , abs(CurrRow-NewRow)=:=1; 
+        abs(CurrColumn-NewColumn)=:=1 , abs(CurrRow-NewRow)=:=0 ; 
+        abs(CurrColumn-NewColumn)=:=1 , abs(CurrRow-NewRow)=:=0
+    );
+
+    (write('Position not valid.\n'), fail).
     
-    
-checkNewCoord(Player,Board,CurrColumn, CurrRow, NewColumn, NewRow) :-
-    write('Position not valid.\n'), fail.
     
 /*Gets a position*/
 getCoord(Column, Row, Size) :-
