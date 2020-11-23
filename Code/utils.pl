@@ -105,3 +105,10 @@ getBiggestValue(Value1,Value2,Biggest):-
 
 getBiggestValue(Value1,Value2,Biggest):-
    Biggest is Value1.
+
+getWinner(WhiteScore, BlackScore, Winner) :-
+   WhiteScore < BlackScore, !,
+   Winner = black.
+
+getWinner(WhiteScore, BlackScore, Winner) :-
+   Winner = white.

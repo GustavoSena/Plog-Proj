@@ -143,19 +143,11 @@ checksProposedMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow) :-
 
 
 game_over(GameState, Winner):-
-    value(GameState,white,WhiteScore),
-    value(GameState,black,BlackScore),
-    
-    
-    
-    write(WhiteScore-BlackScore),write('\n'),
-    
-    (WhiteScore > BlackScore,
-    Winner = white)
-    ;
-    (WhiteScore < BlackScore,
-    Winner = black).
 
+    value(GameState,black,BlackScore),
+    value(GameState,white,WhiteScore),
+    
+    getWinner(WhiteScore, BlackScore, Winner),
 
 
 value(GameState, Player, Value):-
@@ -168,21 +160,22 @@ valueCicle(Board, Player, Value, OldValue):-
     
     searchForColor(Board,Player,0,0,Col,Row),!,
     
-    write(Col-Row),write('(col and row)\n'),
-    (trace;true),
+    /*write(Col-Row),write('(col and row)\n'),*/
+    /*(trace;true),*/
     getValue(UpdatedBoard,Board,Player,NewValue,0,Col,Row),
-    (notrace;true),
-    write(NewValue-OldValue),write('(new and old values)\n'),
+    /*write(UpdatedBoard), write('\n'),*/
+   /* (notrace;true),*/
+    /*write(NewValue-OldValue),write('(new and old values)\n'),*/
 
     getBiggestValue(NewValue,OldValue,BiggestValue),
-    write(BiggestValue),write('(Biggest value )\n'),
+    /*write(BiggestValue),write('(Biggest value )\n'),*/
 
     valueCicle(UpdatedBoard,Player,Value,BiggestValue).
 
 valueCicle(Board, Player, Value, OldValue):-
     Value is OldValue.
 
-getValue(UpdatedBoard,Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
+getValue(UpdatedBoard3, Board, Player, ReturnValue3, Value, CurrColumn, CurrRow):-
     length(Board, Size),
     /*write(CurrColumn-CurrRow-Size), write('\n'),*/
     
@@ -192,7 +185,7 @@ getValue(UpdatedBoard,Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
     CurrColumn>=0),
 
     
-    getCellColor(Board,CurrColumn,CurrRow,Color),
+    getCellColor(Board, CurrColumn, CurrRow, Color),
     
     Color \= visited,
     Color = Player,
@@ -206,38 +199,30 @@ getValue(UpdatedBoard,Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
 
     /*down movement*/
     RowDown is CurrRow + 1,
-    getValue(UpdatedBoard,NewBoard, Player, ReturnValue,NewValue, CurrColumn, RowDown),
+    getValue(UpdatedBoard, NewBoard, Player, ReturnValue, NewValue, CurrColumn, RowDown),
     NextValue is ReturnValue,
+    NewBoard1 = UpdatedBoard,
 
     /*right movement*/
     ColRight is CurrColumn + 1,
-    getValue(UpdatedBoard,NewBoard, Player, ReturnValue,NextValue, ColRight, CurrRow),
-    NextValue2 is ReturnValue,
+    getValue(UpdatedBoard1,NewBoard1, Player, ReturnValue1, NextValue, ColRight, CurrRow),
+    NextValue2 is ReturnValue1,
+    NewBoard2 = UpdatedBoard1,
 
     /*up movement*/
     RowUp is CurrRow - 1,
-    getValue(UpdatedBoard,NewBoard, Player, ReturnValue,NextValue2, CurrColumn, RowUp),
-    NextValue3 is ReturnValue,
+    getValue(UpdatedBoard2,NewBoard2, Player, ReturnValue2, NextValue2, CurrColumn, RowUp),
+    NextValue3 is ReturnValue2,
+    NewBoard3 = UpdatedBoard2,
     
     /*left movement*/
     ColLeft is CurrColumn - 1,
-    getValue(UpdatedBoard,NewBoard, Player, ReturnValue,NextValue3, ColLeft, CurrRow).
-
-
-/*getValue(UpdatedBoard,Board, Player, ReturnValue, Value, CurrColumn, CurrRow):-
-    ReturnValue == Value,!,
-    UpdatedBoard is Board.*/
-
-
-
-getValue(UpdatedBoard,Board, Player, Value, Value, CurrColumn, CurrRow).
+    getValue(UpdatedBoard3,NewBoard3, Player, ReturnValue3, NextValue3, ColLeft, CurrRow).
 
 
 
 
-
-
-
+getValue(Board, Board, Player, Value, Value, CurrColumn, CurrRow).
 
 searchForColor(Board,Color,CurrCol,CurrRow,Col,Row):-
     nth0(CurrRow,Board,RowList),
@@ -261,11 +246,11 @@ searchForColorInCol(RowList,Color,Column,CurrCol,CurrRow,Col,Row):-
     Row is CurrRow.
 
 
-searchForColorInCol(RowList,Color,CurrCol,CurrRow,Col,Row):-
+searchForColorInCol(RowList,Color, Column, CurrCol,CurrRow,Col,Row):-
     length(RowList,Size),
-    NewCol is CurrCol +1,
+    NewCol is CurrCol + 1,
     NewCol<Size,!,
-    searchForColorInRow(RowList,Color,NewCol,CurrRow,Col,Row).
+    searchForColorInRow(RowList,Color, NewCol, CurrRow,Col,Row).
 
 
 
