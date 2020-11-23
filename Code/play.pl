@@ -2,11 +2,11 @@ play:-
     Size is 3,
     generateBoard(GameState,Size),
     
-    gameLoop(GameState,black,0).
+    /*gameLoop(GameState,black,0).*/
 
 
     
-    /*testingLoop(GameState,black).*/
+    testingLoop(GameState,black).
 
     /*valid_moves(NewBoard, Player, L),
     write(L).*/
@@ -14,10 +14,15 @@ play:-
 
 
 testingLoop(GameState,Player):-
-    searchForColor(GameState,Player,0,0,Col,Row),
-    write(Col-Row),write('\n').
+    /*(trace;true),*/
+    /*searchForColor(GameState,orange,0,0,Col,Row),!,
+    write(Col-Row),write('\n').*/
+    mainMenu(Size,Option),
+    Option==4.
+   
 
-
+testingLoop(GameState,Player):-
+    write('There is no orange\n').
 
 
 gameLoop(GameState,Player, TimesSkip) :-

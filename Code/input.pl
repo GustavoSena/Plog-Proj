@@ -1,4 +1,117 @@
 
+
+
+
+mainMenu(Size,Option):-
+    decideSizeBoard(Size),
+    decidePlayers(Option).
+
+
+decideSizeBoard(Size):-
+    repeat,
+    readSize(NSize),
+    validateSize(NSize),
+    generateBoard(Example,NSize),
+    displayGame(Example,white),
+    readConfirmation(Conf,NSize),
+    validateConfirmation(Conf,Size,NSize).
+
+    
+    
+
+readConfirmation(Conf,Size):-
+    write('Confirm board size - '),write(Size),write(' (type y to confirm)\n'),
+    get_char(Conf),
+    peek_char(Char),
+    Char=='\n', !,
+    get_char(Char).
+    
+readConfirmation(Conf,Size) :-
+    readConfirmation(Conf,Size).
+
+validateConfirmation(Conf,Size,NSize):-
+    Conf=='y',!,
+    Size is NSize.
+
+
+validateConfirmation(Conf,Size,NSize):-
+    decideSizeBoard(Size).
+
+
+
+readSize(Size):-
+    write('Choose the size of the board (3 to 9)\n'),
+    get_code(NSize),
+    subsRow(NSize,Size),
+    peek_char(Char),
+    Char=='\n', !,
+    get_char(Char).
+    
+readSize(Size) :-
+    readSize(Size).
+
+validateSize(Size):-
+    write(Size),write('-Size\n'),
+    (Size>2,Size<10);(write('Invalid Size!\n'),fail).
+
+
+
+decidePlayers(Option):-
+    repeat,
+    write(' _______________________________________________________\n'),
+    write('|                                                       |\n'),
+    write('|                                                       |\n'),
+    write('|        ______  _______  __   __  _______    ____  ___  |\n'),
+    write('|       /      ||       ||  | |  ||   __  |  /   / /  /  |\n'),
+    write('|      |  _____||  __   ||  | |  ||  |  | | /   /_/  /   |\n'),
+    write('|      | |_____ | |  |  ||  | |  ||  |__| ||       _/    |\n'),
+    write('|      |_____  || |__|  ||  |_|  ||   _   ||      /_     |\n'),
+    write('|       _____| ||      _||       ||  / |  ||   __   |    |\n'),
+    write('|      |_______||____/|_||_______||_/  |__||__/  |__|    |\n'),
+    write('|                                                       |\n'),
+    write('|                                                       |\n'),
+    write('|                                                       |\n'),
+    write('|               1 - Player vs Player                    |\n'),
+    write('|                                                       |\n'),
+    write('|               2 - Player vs Comp1.                    |\n'),
+    write('|                                                       |\n'),
+    write('|               3 - Comp1. vs Comp2.                    |\n'),
+    write('|                                                       |\n'),
+    write('|                                                       |\n'),
+    write('|               4 - Exit                                |\n'),
+    write('|                                                       |\n'),
+    write('|                                                       |\n'),
+    write('|                                                       |\n'),
+    write('|_______________________________________________________|\n'),
+
+    readOption(Option),
+    validateOption(Option).
+
+
+
+readOption(Option):-
+    write('Choose the Playing option (1 to 3)\n'),
+    get_code(NOption),
+    subsRow(NOption,Option),
+    peek_char(Char),
+    Char=='\n', !,
+    get_char(Char).
+    
+readOption(Option):-
+    readOption(Option).
+
+validateOption(Option):-
+    (Option>0,
+    Option<5);(write('Invalid option!\n'),fail).
+                                                
+                                                    
+                                        
+
+
+
+
+
+
 getMove(Player, Board, CurrColumn, CurrRow, NewColumn, NewRow, Answer) :-
     skip(Answer),
     ((Answer == 'n',
