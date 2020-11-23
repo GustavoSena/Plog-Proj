@@ -1,12 +1,13 @@
 play:-
-    Size is 3,
+    mainMenu(Size,Option),
+    Option==1,
     generateBoard(GameState,Size),
     
-    /*gameLoop(GameState,black,0).*/
+    gameLoop(GameState,black,0).
 
 
     
-    testingLoop(GameState,black).
+    /*testingLoop(GameState,black).*/
 
     /*valid_moves(NewBoard, Player, L),
     write(L).*/
@@ -147,7 +148,7 @@ game_over(GameState, Winner):-
     value(GameState,black,BlackScore),
     value(GameState,white,WhiteScore),
     
-    getWinner(WhiteScore, BlackScore, Winner),
+    getWinner(WhiteScore, BlackScore, Winner).
 
 
 value(GameState, Player, Value):-
