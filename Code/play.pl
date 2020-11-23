@@ -136,8 +136,9 @@ checksProposedMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow) :-
 
 
 game_over(GameState, Winner):-
-    value(GameState,black,BlackScore),
     value(GameState,white,WhiteScore),
+    value(GameState,black,BlackScore),
+    
     
     
     WhiteScore > BlackScore,
@@ -158,14 +159,16 @@ getValue(Board,Player,Value):-
 getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
 
     length(Board, Size),
-    /*write(CurrColumn-CurrRow-Size), write('\n\n'),*/
-    CurrColumn>=0,
+    write(CurrColumn-CurrRow-Size), write('\n'),
+     write('Row>\n'),
+    CurrRow>=0,
     
 
     getCellColor(Board,CurrColumn,CurrRow,Color),
     Color \= visited,
     Color = Player,
-    replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
+    Aux is CurrRow,
+    replaceValue(Board,NewBoard,CurrColumn,Aux,Player),
     write(NewBoard), write('\n'),
     NewValue is Value + 1,
 
@@ -178,9 +181,9 @@ getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
 getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
 
     length(Board, Size),
-    /*write(CurrColumn-CurrRow-Size), write('\n\n'),*/
-
-    CurrColumn<Size,
+    write(CurrColumn-CurrRow-Size), write('\n'),
+    write('Row<\n'),
+    CurrRow<Size,
     
     getCellColor(Board,CurrColumn,CurrRow,Color),
     Color \= visited,
@@ -199,9 +202,9 @@ getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
 getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
 
     length(Board, Size),
-    /*write(CurrColumn-CurrRow-Size), write('\n\n'),*/
-
-    CurrRow<Size,
+    write(CurrColumn-CurrRow-Size), write('\n'),
+    write('Col<\n'),
+    CurrColumn<Size,
 
     getCellColor(Board,CurrColumn,CurrRow,Color),
     Color \= visited,
@@ -221,9 +224,10 @@ getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
 
 
     length(Board, Size),
-    /*write(CurrColumn-CurrRow-Size), write('\n\n'),*/
-
-    CurrRow>=0,
+    write(CurrColumn-CurrRow-Size), write('\n'),
+    write('Col>\n'),
+    (CurrColumn<0,trace;true),
+    CurrColumn>=0,
 
     getCellColor(Board,CurrColumn,CurrRow,Color),
     Color \= visited,
@@ -261,9 +265,6 @@ searchForColorInRow(RowList,Color,CurrCol,CurrRow,Col,Row):-
     last(Column,CheckColor),
     Color==CheckColor.
     
-
-
-
 replaceValue(OldBoard, NewBoard, Column, Row, Color) :-
     nth0(Row,OldBoard,RowList),
     nth0(Column,RowList,ColList),
