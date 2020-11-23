@@ -4,6 +4,8 @@ play:-
     
     gameLoop(GameState,black,0).
 
+
+    
     /*testingLoop(GameState,black).*/
 
     /*valid_moves(NewBoard, Player, L),
@@ -12,7 +14,7 @@ play:-
 
 
 testingLoop(GameState,Player):-
-    \+searchForColor(GameState,Player,0,0,Col,Row),
+    searchForColor(GameState,Player,0,0,Col,Row),
     write(Col-Row),write('\n').
 
 
@@ -141,107 +143,89 @@ game_over(GameState, Winner):-
     
     
     
-    WhiteScore > BlackScore,
-    Winner = white
+    write(WhiteScore-BlackScore),write('\n'),
+    
+    (WhiteScore > BlackScore,
+    Winner = white)
     ;
-    WhiteScore < BlackScore,
-    Winner = black.
+    (WhiteScore < BlackScore,
+    Winner = black).
 
 
 
 value(GameState, Player, Value):-
     NewBoard = GameState,
-    getValue(NewBoard,Player,Value).
+    valueCicle(NewBoard,Player,Value, 0).
+
+
+
+valueCicle(Board, Player, Value, OldValue):-
     
-getValue(Board,Player,Value):-
-    getValue(Board,Player,Value,0,0,0).
+    searchForColor(Board,Player,0,0,Col,Row),!,
+    
+    write(Col-Row),write('(col and row)\n'),
+    (trace;true),
+    getValue(UpdatedBoard,Board,Player,NewValue,0,Col,Row),
+    (notrace;true),
+    write(NewValue-OldValue),write('(new and old values)\n'),
 
-getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
+    getBiggestValue(NewValue,OldValue,BiggestValue),
+    write(BiggestValue),write('(Biggest value )\n'),
 
+    valueCicle(UpdatedBoard,Player,Value,BiggestValue).
+
+valueCicle(Board, Player, Value, OldValue):-
+    Value is OldValue.
+
+getValue(UpdatedBoard,Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
     length(Board, Size),
-    write(CurrColumn-CurrRow-Size), write('\n'),
-     write('Row>\n'),
-    CurrRow>=0,
+    /*write(CurrColumn-CurrRow-Size), write('\n'),*/
     
+    (CurrRow>=0,
+    CurrRow<Size,
+    CurrColumn<Size,
+    CurrColumn>=0),
 
+    
     getCellColor(Board,CurrColumn,CurrRow,Color),
+    
     Color \= visited,
     Color = Player,
-    Aux is CurrRow,
-    replaceValue(Board,NewBoard,CurrColumn,Aux,Player),
-    write(NewBoard), write('\n'),
+    
+    replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
+    
+    /*write(NewBoard), write('\n'),*/
     NewValue is Value + 1,
+
+    
+
+    /*down movement*/
+    RowDown is CurrRow + 1,
+    getValue(UpdatedBoard,NewBoard, Player, ReturnValue,NewValue, CurrColumn, RowDown),
+    NextValue is ReturnValue,
+
+    /*right movement*/
+    ColRight is CurrColumn + 1,
+    getValue(UpdatedBoard,NewBoard, Player, ReturnValue,NextValue, ColRight, CurrRow),
+    NextValue2 is ReturnValue,
 
     /*up movement*/
-    NewRow is CurrRow - 1,
-    getValue(NewBoard, Player, ReturnValue,NewValue, CurrColumn, NewRow),
+    RowUp is CurrRow - 1,
+    getValue(UpdatedBoard,NewBoard, Player, ReturnValue,NextValue2, CurrColumn, RowUp),
+    NextValue3 is ReturnValue,
     
-    ReturnValue is NewValue.
-
-getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
-
-    length(Board, Size),
-    write(CurrColumn-CurrRow-Size), write('\n'),
-    write('Row<\n'),
-    CurrRow<Size,
-    
-    getCellColor(Board,CurrColumn,CurrRow,Color),
-    Color \= visited,
-    Color = Player,
-    replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
-    write(NewBoard), write('\n'),
-    NewValue is Value + 1,
-    
-    /*down movement*/
-    NewRow is CurrRow + 1,
-    getValue(NewBoard, Player, ReturnValue,NewValue, CurrColumn, NewRow),
-
-    ReturnValue is NewValue.
-
-
-getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
-
-    length(Board, Size),
-    write(CurrColumn-CurrRow-Size), write('\n'),
-    write('Col<\n'),
-    CurrColumn<Size,
-
-    getCellColor(Board,CurrColumn,CurrRow,Color),
-    Color \= visited,
-    Color = Player,
-    replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
-    write(NewBoard), write('\n'),
-    NewValue is Value + 1,
-    
-    /*right movement*/
-    NewColumn is CurrColumn + 1,
-    getValue(NewBoard, Player, ReturnValue,NewValue, NewColumn, CurrRow),
-
-    ReturnValue is NewValue.
-
-
-getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
-
-
-    length(Board, Size),
-    write(CurrColumn-CurrRow-Size), write('\n'),
-    write('Col>\n'),
-    (CurrColumn<0,trace;true),
-    CurrColumn>=0,
-
-    getCellColor(Board,CurrColumn,CurrRow,Color),
-    Color \= visited,
-    Color = Player,
-    replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
-    write(NewBoard), write('\n'),
-    NewValue is Value + 1,
- 
     /*left movement*/
-    NewColumn is CurrColumn - 1,
-    getValue(NewBoard, Player, ReturnValue,NewValue, NewColumn, CurrRow),
-  
-    ReturnValue is NewValue.
-    
+    ColLeft is CurrColumn - 1,
+    getValue(UpdatedBoard,NewBoard, Player, ReturnValue,NextValue3, ColLeft, CurrRow).
+
+
+/*getValue(UpdatedBoard,Board, Player, ReturnValue, Value, CurrColumn, CurrRow):-
+    ReturnValue == Value,!,
+    UpdatedBoard is Board.*/
+
+
+
+getValue(UpdatedBoard,Board, Player, Value, Value, CurrColumn, CurrRow).
 
 
 
@@ -252,27 +236,44 @@ getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
 
 searchForColor(Board,Color,CurrCol,CurrRow,Col,Row):-
     nth0(CurrRow,Board,RowList),
-    \+searchForColorInRow(RowList,Color,CurrCol,CurrRow,Col,Row), !,
-    NewRow is CurrRow+1,
-    searchForColor(Board,Color,CurrCol,NewRow,Col,Row).
+    searchForColorInRow(RowList,Color,CurrCol,CurrRow,Col,Row).
 
 searchForColor(Board,Color,CurrCol,CurrRow,Col,Row):-
-    Col is CurrCol,
-    Row is CurrRow.
+    length(Board,Size),
+    NewRow is CurrRow+1,
+    NewRow<Size,!,
+    searchForColor(Board,Color,CurrCol,NewRow,Col,Row).
 
 searchForColorInRow(RowList,Color,CurrCol,CurrRow,Col,Row):-
     nth0(CurrCol,RowList,Column),
-    last(Column,CheckColor),
-    Color==CheckColor.
+    searchForColorInCol(RowList,Color,Column,CurrCol,CurrRow,Col,Row).
     
-replaceValue(OldBoard, NewBoard, Column, Row, Color) :-
-    nth0(Row,OldBoard,RowList),
-    nth0(Column,RowList,ColList),
 
-    length(ColList, ColSize),
-    IndexCol is ColSize - 1,
-    NextPlayer = visited,
-    
-    replace_nth0(ColList, IndexCol, Color, NextPlayer,NewCol),
-    replace_nth0(RowList,Column,ColList,NewCol,NewRow),
-    replace_nth0(OldBoard,Row,RowList,NewRow,NewBoard).
+searchForColorInCol(RowList,Color,Column,CurrCol,CurrRow,Col,Row):-
+    last(Column,CheckColor),
+    Color==CheckColor,
+    Col is CurrCol,
+    Row is CurrRow.
+
+
+searchForColorInCol(RowList,Color,CurrCol,CurrRow,Col,Row):-
+    length(RowList,Size),
+    NewCol is CurrCol +1,
+    NewCol<Size,!,
+    searchForColorInRow(RowList,Color,NewCol,CurrRow,Col,Row).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -11,3 +11,99 @@ MARIA (DONE) -funcao para trocar a peça de cima
 Perguntar ao professor:
     -Avaliação do tabuleiro?
     -Lista de jogadas válidas?
+
+
+
+
+
+
+
+
+    
+getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
+
+    length(Board, Size),
+    write(CurrColumn-CurrRow-Size), write('\n'),
+    write('Row>\n'),
+    CurrRow>=0,
+    
+    
+
+    getCellColor(Board,CurrColumn,CurrRow,Color),
+    Color \= visited,
+    Color = Player,
+    Aux is CurrRow,
+    replaceValue(Board,NewBoard,CurrColumn,Aux,Player),
+    write(NewBoard), write('\n'),
+    NewValue is Value + 1,
+
+    /*up movement*/
+    NewRow is CurrRow - 1,
+    getValue(NewBoard, Player, ReturnValue,NewValue, CurrColumn, NewRow),
+    
+    ReturnValue is NewValue.
+
+getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
+
+    length(Board, Size),
+    write(CurrColumn-CurrRow-Size), write('\n'),
+    write('Row<\n'),
+    CurrRow<Size,
+    
+    getCellColor(Board,CurrColumn,CurrRow,Color),
+    Color \= visited,
+    Color = Player,
+    replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
+    write(NewBoard), write('\n'),
+    NewValue is Value + 1,
+    
+    /*down movement*/
+    NewRow is CurrRow + 1,
+    getValue(NewBoard, Player, ReturnValue,NewValue, CurrColumn, NewRow),
+
+    ReturnValue is NewValue.
+
+
+getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
+
+    length(Board, Size),
+    write(CurrColumn-CurrRow-Size), write('\n'),
+    write('Col<\n'),
+    CurrColumn<Size,
+
+    getCellColor(Board,CurrColumn,CurrRow,Color),
+    Color \= visited,
+    Color = Player,
+    replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
+    write(NewBoard), write('\n'),
+    NewValue is Value + 1,
+    
+    /*right movement*/
+    NewColumn is CurrColumn + 1,
+    getValue(NewBoard, Player, ReturnValue,NewValue, NewColumn, CurrRow),
+
+    ReturnValue is NewValue.
+
+
+getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
+
+
+    length(Board, Size),
+    write(CurrColumn-CurrRow-Size), write('\n'),
+    write('Col>\n'),
+    (CurrColumn<0,trace;true),
+    CurrColumn>=0,
+
+    getCellColor(Board,CurrColumn,CurrRow,Color),
+    Color \= visited,
+    Color = Player,
+    replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
+    write(NewBoard), write('\n'),
+    NewValue is Value + 1,
+ 
+    /*left movement*/
+    NewColumn is CurrColumn - 1,
+    getValue(NewBoard, Player, ReturnValue,NewValue, NewColumn, CurrRow),
+  
+    ReturnValue is NewValue.
+    

@@ -81,3 +81,27 @@ getCellColor(Board,Col,Row,Color):-
 
 deleteFirst([X|L],R):-
     R is L.
+
+
+
+
+
+replaceValue(OldBoard, NewBoard, Column, Row, Color) :-
+    nth0(Row,OldBoard,RowList),
+    nth0(Column,RowList,ColList),
+
+    length(ColList, ColSize),
+    IndexCol is ColSize - 1,
+    NextPlayer = visited,
+    
+    replace_nth0(ColList, IndexCol, Color, NextPlayer,NewCol),
+    replace_nth0(RowList,Column,ColList,NewCol,NewRow),
+    replace_nth0(OldBoard,Row,RowList,NewRow,NewBoard).
+
+
+getBiggestValue(Value1,Value2,Biggest):-
+   Value1<Value2,!,
+   Biggest is Value2.
+
+getBiggestValue(Value1,Value2,Biggest):-
+   Biggest is Value1.
