@@ -1,27 +1,34 @@
 play:-
     Size is 3,
     generateBoard(GameState,Size),
+    
     gameLoop(GameState,black,0).
 
-
+    /*testingLoop(GameState,black).*/
 
     /*valid_moves(NewBoard, Player, L),
     write(L).*/
 
+
+
+testingLoop(GameState,Player):-
+    \+searchForColor(GameState,Player,0,0,Col,Row),
+    write(Col-Row),write('\n').
+
+
+
+
 gameLoop(GameState,Player, TimesSkip) :-
+    TimesSkip =\=2 , !,
+
     displayGame(GameState, Player),
-    write(TimesSkip), write('\n'),
-    TimesSkip =\=2, !,
-     
-    write('Get move\n'),
     getMove(Player, GameState, CurrColumn, CurrRow, NewColumn, NewRow, Skip),
     (
         (Skip == 'n',
         NewTimesSkip is 0,
-        move(GameState, CurrColumn, CurrRow, NewBoard, NewColumn, NewRow)
+        move(GameState, CurrColumn, CurrRow, NewBoard, NewColumn, NewRow, Player)
         )
     ;
-    
         (Skip == 'y',
         NewTimesSkip is TimesSkip + 1,
         write('You skip turn!\n'),
@@ -33,15 +40,14 @@ gameLoop(GameState,Player, TimesSkip) :-
     gameLoop(NewBoard, NextPlayer, NewTimesSkip).
 
 gameLoop(GameState,Player, TimesSkip) :-
-    write('game over\n'),
     game_over(GameState, Winner),
     write(Winner).
     
     
 /*Executes a move, obtaining a new board*/
-move(OldBoard, OldColumn, OldRow, NewBoard, NewColumn, NewRow) :-
-    insertStack(OldBoard, UpdBoard, NewColumn, NewRow, [black]),
-    removeStack(UpdBoard, NewBoard, OldColumn, OldRow, [black]).
+move(OldBoard, OldColumn, OldRow, NewBoard, NewColumn, NewRow, Player) :-
+    insertStack(OldBoard, UpdBoard, NewColumn, NewRow, [Player]),
+    removeStack(UpdBoard, NewBoard, OldColumn, OldRow, [Player]).
 
 /*Inserts the new piece into the stack to play*/
 insertStack(OldBoard,NewBoard,Column,Row,Color):-
@@ -129,12 +135,10 @@ checksProposedMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow) :-
 
 
 
-
-
-
 game_over(GameState, Winner):-
+    value(GameState,black,BlackScore),
     value(GameState,white,WhiteScore),
-    value(GameState,white,BlackScore),
+    
     
     WhiteScore > BlackScore,
     Winner = white
@@ -145,40 +149,118 @@ game_over(GameState, Winner):-
 
 
 value(GameState, Player, Value):-
-    NewBoard is GameState,
+    NewBoard = GameState,
     getValue(NewBoard,Player,Value).
     
 getValue(Board,Player,Value):-
-    getValue(Board,Player,Value,0,0).
+    getValue(Board,Player,Value,0,0,0).
 
-getValue(Board,Player,Value,CurrColumn,CurrRow):-
+getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
+
+    length(Board, Size),
+    /*write(CurrColumn-CurrRow-Size), write('\n\n'),*/
+    CurrColumn>=0,
+    
+
     getCellColor(Board,CurrColumn,CurrRow,Color),
     Color \= visited,
     Color = Player,
     replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
-    Value is Value+1,
-    length(NewBoard, Size),
+    write(NewBoard), write('\n'),
+    NewValue is Value + 1,
+
     /*up movement*/
     NewRow is CurrRow - 1,
-    NewRow >= 0,
-    getValue(NewBoard, Player, Value, CurrColumn,NewRow)
-    ;
+    getValue(NewBoard, Player, ReturnValue,NewValue, CurrColumn, NewRow),
+    
+    ReturnValue is NewValue.
+
+getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
+
+    length(Board, Size),
+    /*write(CurrColumn-CurrRow-Size), write('\n\n'),*/
+
+    CurrColumn<Size,
+    
+    getCellColor(Board,CurrColumn,CurrRow,Color),
+    Color \= visited,
+    Color = Player,
+    replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
+    write(NewBoard), write('\n'),
+    NewValue is Value + 1,
+    
     /*down movement*/
     NewRow is CurrRow + 1,
-    NewRow =< Size,
-    getValue(NewBoard, Player, Value,CurrColumn,NewRow)
-    ;
-    /*left movement*/
-    NewColumn is CurrColumn - 1,
-    NewColumn >= 0,
-    getValue(NewBoard, Player, Value,NewColumn,CurrRow)
-    ;
+    getValue(NewBoard, Player, ReturnValue,NewValue, CurrColumn, NewRow),
+
+    ReturnValue is NewValue.
+
+
+getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
+
+    length(Board, Size),
+    /*write(CurrColumn-CurrRow-Size), write('\n\n'),*/
+
+    CurrRow<Size,
+
+    getCellColor(Board,CurrColumn,CurrRow,Color),
+    Color \= visited,
+    Color = Player,
+    replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
+    write(NewBoard), write('\n'),
+    NewValue is Value + 1,
+    
     /*right movement*/
     NewColumn is CurrColumn + 1,
-    NewColumn =< Size,
-    getValue(NewBoard, Player, Value,NewColumn,CurrRow)
-    ;
-    fail.
+    getValue(NewBoard, Player, ReturnValue,NewValue, NewColumn, CurrRow),
+
+    ReturnValue is NewValue.
+
+
+getValue(Board,Player,ReturnValue,Value,CurrColumn,CurrRow):-
+
+
+    length(Board, Size),
+    /*write(CurrColumn-CurrRow-Size), write('\n\n'),*/
+
+    CurrRow>=0,
+
+    getCellColor(Board,CurrColumn,CurrRow,Color),
+    Color \= visited,
+    Color = Player,
+    replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
+    write(NewBoard), write('\n'),
+    NewValue is Value + 1,
+ 
+    /*left movement*/
+    NewColumn is CurrColumn - 1,
+    getValue(NewBoard, Player, ReturnValue,NewValue, NewColumn, CurrRow),
+  
+    ReturnValue is NewValue.
+    
+
+
+
+
+
+
+
+
+searchForColor(Board,Color,CurrCol,CurrRow,Col,Row):-
+    nth0(CurrRow,Board,RowList),
+    \+searchForColorInRow(RowList,Color,CurrCol,CurrRow,Col,Row), !,
+    NewRow is CurrRow+1,
+    searchForColor(Board,Color,CurrCol,NewRow,Col,Row).
+
+searchForColor(Board,Color,CurrCol,CurrRow,Col,Row):-
+    Col is CurrCol,
+    Row is CurrRow.
+
+searchForColorInRow(RowList,Color,CurrCol,CurrRow,Col,Row):-
+    nth0(CurrCol,RowList,Column),
+    last(Column,CheckColor),
+    Color==CheckColor.
+    
 
 
 
@@ -188,9 +270,8 @@ replaceValue(OldBoard, NewBoard, Column, Row, Color) :-
 
     length(ColList, ColSize),
     IndexCol is ColSize - 1,
-    NextPlayer is visited,
-    currPlayer(Color, CurrPlayer),
-
-    replace_nth0(ColList, IndexCol, CurrPlayer, NextPlayer,NewCol),
+    NextPlayer = visited,
+    
+    replace_nth0(ColList, IndexCol, Color, NextPlayer,NewCol),
     replace_nth0(RowList,Column,ColList,NewCol,NewRow),
     replace_nth0(OldBoard,Row,RowList,NewRow,NewBoard).

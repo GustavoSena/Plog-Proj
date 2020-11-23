@@ -41,7 +41,7 @@ checkCurrCoord(Player,Board, CurrColumn, CurrRow) :-
 
 /*Checks the new position*/ 
 checkNewCoord(Player,Board,CurrColumn, CurrRow, NewColumn, NewRow):-
-    write(CurrColumn-CurrRow-NewColumn-NewRow), write('\n'),
+
     /*Checks if the piece belong to the player*/
     nth0(NewRow,Board,RowList),
     nth0(NewColumn,RowList,ColList),
@@ -57,22 +57,15 @@ checkNewCoord(Player,Board,CurrColumn, CurrRow, NewColumn, NewRow):-
     CurrSize = NewSize,
 
     /*Checks if the position is adjacent*/
-    /*(
-        (CurrColumn =:= NewColumn , CurrRow+1=:=NewRow,(write(CurrColumn-CurrRow-NewColumn-NewRow), write('\n'))) ;  
-        (CurrColumn =:= NewColumn , CurrRow-1=:=NewRow,(write(CurrColumn-CurrRow-NewColumn-NewRow), write('\n'))) ; 
-        (CurrColumn+1 =:= NewColumn , CurrRow=:=NewRow,(write(CurrColumn-CurrRow-NewColumn-NewRow), write('\n'))) ; 
-        (CurrColumn-1 =:= NewColumn , CurrRow=:=NewRow,(write(CurrColumn-CurrRow-NewColumn-NewRow), write('\n')))
-    );*/
-
     (
-        abs(CurrColumn-NewColumn)=:=0 , abs(CurrRow-NewRow)=:=1;  
-        abs(CurrColumn-NewColumn)=:=0 , abs(CurrRow-NewRow)=:=1; 
-        abs(CurrColumn-NewColumn)=:=1 , abs(CurrRow-NewRow)=:=0 ; 
-        abs(CurrColumn-NewColumn)=:=1 , abs(CurrRow-NewRow)=:=0
-    );
+        (abs(CurrColumn-NewColumn)=:=0, abs(CurrRow-NewRow)=:=1)
+        ; 
+        (abs(CurrColumn-NewColumn)=:=1, abs(CurrRow-NewRow)=:=0)
+    )
+
+    ;
 
     (write('Position not valid.\n'), fail).
-    
     
 /*Gets a position*/
 getCoord(Column, Row, Size) :-
