@@ -59,6 +59,7 @@ subsRow(59, 11).
 subsRow(60, 12).
 subsRow(61, 13).
 
+
 subsPlayer(white,S):-S='White'.
 subsPlayer(black,S):-S='Black'.
 
@@ -66,26 +67,32 @@ subsPlayer(black,S):-S='Black'.
 nextPlayer([white], black).
 nextPlayer([black], white).
 
+
 currPlayer([white], white).
 currPlayer([black], black).
 
-replace_nth0(List, Index, OldElem, NewElem, NewList) :-
-   nth0(Index,List,OldElem,Transfer),
-   nth0(Index,NewList,NewElem,Transfer).
-
-
-getCellColor(Board,Col,Row,Color):-
-   nth0(Row,Board,RowList),
-   nth0(Col,RowList,ColorList),
-   last(ColorList,Color).
 
 deleteFirst([X|L],R):-
     R is L.
 
 
+/**/
+/*replace_nth0(+List, Index, OldElem, NewElem, -NewList)*/
+replace_nth0(List, Index, OldElem, NewElem, NewList) :-
+   nth0(Index,List,OldElem,Transfer),
+   nth0(Index,NewList,NewElem,Transfer).
 
 
+/*Gets the color of the given cell*/
+/*getCellColor(+Board, +Col, +Row, -Color)*/
+getCellColor(Board,Col,Row,Color) :-
+   nth0(Row,Board,RowList),
+   nth0(Col,RowList,ColorList),
+   last(ColorList,Color).
 
+
+/**/
+/*replaceValue(+OldBoard, -NewBoard, +Column, +Row, -Color)*/
 replaceValue(OldBoard, NewBoard, Column, Row, Color) :-
     nth0(Row,OldBoard,RowList),
     nth0(Column,RowList,ColList),
@@ -99,16 +106,27 @@ replaceValue(OldBoard, NewBoard, Column, Row, Color) :-
     replace_nth0(OldBoard,Row,RowList,NewRow,NewBoard).
 
 
-getBiggestValue(Value1,Value2,Biggest):-
+/*Gets the biggest value*/
+/*getBiggestValue(+Value1, +Value2, -Biggest)*/
+getBiggestValue(Value1, Value2, Biggest) :-
    Value1<Value2,!,
    Biggest is Value2.
 
-getBiggestValue(Value1,Value2,Biggest):-
+
+/*Gets the biggest value*/
+/*getBiggestValue(+Value1, +Value2, -Biggest)*/
+getBiggestValue(Value1, Value2, Biggest) :-
    Biggest is Value1.
 
+
+/*Gets the winner. In this case, the Black piece player is the winner*/
+/*getWinner(+WhiteScore, +BlackScore, -Winner)*/
 getWinner(WhiteScore, BlackScore, Winner) :-
    WhiteScore < BlackScore, !,
    Winner = black.
 
+
+/*Gets the winner. In this case, the White piece player is the winner*/
+/*getWinner(+WhiteScore, +BlackScore, -Winner)*/
 getWinner(WhiteScore, BlackScore, Winner) :-
    Winner = white.
