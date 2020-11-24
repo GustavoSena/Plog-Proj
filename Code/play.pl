@@ -1,10 +1,9 @@
 play:-
-
-    mainMenu(Size,Option),
-    Option==1,
+    mainMenu(Size,Player1,LevelP1,Player2,LevelP2,Option),
+    Option\=4,
     generateBoard(GameState,Size),
     
-    gameLoop(GameState,black,0).
+    gameLoop(GameState,Player1,Player2,LevelP1,LevelP2,'n').
 
 
     
@@ -27,7 +26,8 @@ testingLoop(GameState,Player):-
     write('There is no orange\n').
 
 
-gameLoop(GameState,Player, TimesSkip) :-
+
+/*gameLoop(GameState,Player, TimesSkip) :-
     TimesSkip =\=2 , !,
 
     displayGame(GameState, Player),
@@ -46,17 +46,156 @@ gameLoop(GameState,Player, TimesSkip) :-
     ),
 
     nextPlayer([Player],NextPlayer),
-    /*(trace;true),*/
-    valid_moves(NewBoard, NextPlayer, L),
-    write(L), write('\n'),
-    /*(notrace;true),*/
-    gameLoop(NewBoard, NextPlayer, NewTimesSkip).
+    gameLoop(NewBoard, NextPlayer, NewTimesSkip).*/
 
-gameLoop(GameState,Player, TimesSkip) :-
+
+/*choose_move(+GameState, +Player, +Level, -Move).*/
+
+
+
+gameLoop(GameState,black,white,LevelP1,LevelP2,LastSkip) :-
+
+    displayGame(GameState, black),
+    getMove(black, GameState, CurrCol, CurrRow, NewCol, NewRow, Skip),
+    (
+        (Skip == 'n',
+        move(GameState, CurrCol, CurrRow, GameState2, NewCol, NewRow, black)
+        )
+    ;
+        (Skip == 'y',
+        write('You skip turn!\n'),
+        GameState2 = GameState
+        )
+    ),
+    (\+(Skip=='y',LastSkip=='y')),!,
+    displayGame(GameState2, white),
+    getMove(white, GameState2, CurrCol2, CurrRow2, NewCol2, NewRow2, Skip2),
+    (
+        (Skip2 == 'n',
+        move(GameState2, CurrCol2, CurrRow2, NewBoard, NewCol2, NewRow2, white)
+        )
+    ;
+        (Skip2 == 'y',
+        write('You skip turn!\n'),
+        NewBoard = GameState2
+        )
+    ),
+
+    (\+(Skip=='y',Skip2=='y')),!,
+
+    gameLoop(NewBoard, black,white,LevelP1,LevelP2,Skip2).
+
+
+
+
+
+gameLoop(GameState,black,comp2,LevelP1,LevelP2,LastSkip) :-
+
+    displayGame(GameState, black),
+    getMove(black, GameState, CurrCol, CurrRow, NewCol, NewRow, Skip),
+    (
+        (Skip == 'n',
+        move(GameState, CurrCol, CurrRow, GameState2, NewCol, NewRow, black)
+        )
+    ;
+        (Skip == 'y',
+        write('You skip turn!\n'),
+        GameState2 = GameState
+        )
+    ),
+    (\+(Skip=='y',LastSkip=='y')),!,
+    displayGame(GameState2, white),
+    choose_move(GameState2, white, LevelP2, CurrCol2-CurrRow2-NewCol2-NewRow2-Skip2),
+    (
+        (Skip2 == 'n',
+        move(GameState2, CurrCol2, CurrRow2, NewBoard, NewCol2, NewRow2, white)
+        )
+    ;
+        (Skip2 == 'y',
+        write('You skip turn!\n'),
+        NewBoard = GameState2
+        )
+    ),
+
+    (\+(Skip=='y',Skip2=='y')),!,
+
+    gameLoop(NewBoard, black,comp2,LevelP1,LevelP2,Skip2).
+
+gameLoop(GameState,comp1,white,LevelP1,LevelP2,LastSkip) :-
+
+    displayGame(GameState, black),
+    choose_move(GameState, black, LevelP1, CurrCol-CurrRow-NewCol-NewRow-Skip),
+    (
+        (Skip == 'n',
+        move(GameState, CurrCol, CurrRow, GameState2, NewCol, NewRow, black)
+        )
+    ;
+        (Skip == 'y',
+        write('You skip turn!\n'),
+        GameState2 = GameState
+        )
+    ),
+    (\+(Skip=='y',LastSkip=='y')),!,
+    displayGame(GameState2, white),
+    getMove(white, GameState2, CurrCol2, CurrRow2, NewCol2, NewRow2, Skip2),
+    (
+        (Skip2 == 'n',
+        move(GameState2, CurrCol2, CurrRow2, NewBoard, NewCol2, NewRow2, white)
+        )
+    ;
+        (Skip2 == 'y',
+        write('You skip turn!\n'),
+        NewBoard = GameState2
+        )
+    ),
+
+    (\+(Skip=='y',Skip2=='y')),!,
+
+    gameLoop(NewBoard, comp1,white,LevelP1,LevelP2,Skip2).
+
+gameLoop(GameState,comp1,comp2,LevelP1,LevelP2,LastSkip) :-
+
+    displayGame(GameState, black),
+    choose_move(GameState, black, LevelP1, CurrCol-CurrRow-NewCol-NewRow-Skip),
+    (
+        (Skip == 'n',
+        move(GameState, CurrCol, CurrRow, GameState2, NewCol, NewRow, black)
+        )
+    ;
+        (Skip == 'y',
+        write('You skip turn!\n'),
+        GameState2 = GameState
+        )
+    ),
+    (\+(Skip=='y',LastSkip=='y')),!,
+    displayGame(GameState2, white),
+    choose_move(GameState2, white, LevelP2, CurrCol2-CurrRow2-NewCol2-NewRow2-Skip2),
+    (
+        (Skip2 == 'n',
+        move(GameState2, CurrCol2, CurrRow2, NewBoard, NewCol2, NewRow2, white)
+        )
+    ;
+        (Skip2 == 'y',
+        write('You skip turn!\n'),
+        NewBoard = GameState2
+        )
+    ),
+
+    (\+(Skip=='y',Skip2=='y')),!,
+
+    gameLoop(NewBoard, comp1,comp2,LevelP1,LevelP2,Skip2).
+
+
+gameLoop(GameState,Player1, Player2,LevelP1,LevelP2,LastSkip) :-
     game_over(GameState, Winner),
-    write(Winner).
+    printWinner(Winner).
     
+
+
     
+
+
+
 /*Executes a move, obtaining a new board*/
 move(OldBoard, OldColumn, OldRow, NewBoard, NewColumn, NewRow, Player) :-
     insertStack(OldBoard, UpdBoard, NewColumn, NewRow, [Player]),
