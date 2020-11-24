@@ -2,9 +2,9 @@
 
 
 
-mainMenu(Size,Option):-
+mainMenu(Size,Player1,LevelP1,Player2,LevelP2,Option):-
     decideSizeBoard(Size),
-    decidePlayers(Option).
+    decidePlayers(Player1,LevelP1,Player2,LevelP2,Option).
 
 
 decideSizeBoard(Size):-
@@ -56,40 +56,91 @@ validateSize(Size):-
 
 
 
-decidePlayers(Option):-
+decidePlayers(Player1,LevelP1,Player2,LevelP2,Option):-
     repeat,
-    write(' _______________________________________________________\n'),
-    write('|                                                       |\n'),
-    write('|                                                       |\n'),
-    write('|        ________   _______ ___  ___  ________ ___  __  |\n'),
-    write('|       /       / /       //  / /  //  ___   //  / / /  |\n'),
-    write('|      /   ____/ /  __   //  / /  //  /  /  //  /_/ /   |\n'),
-    write('|     /   /____ /  / /  //  / /  //  /__/  //    __/    |\n'),
-    write('|    /____    //  /_/  //  /_/  //  ___   //    /_      |\n'),
-    write('|    _____/  //       //       //  /  /  //  __  /      |\n'),
-    write('|   /_______//____/|_|/_______//__/  /__//__/ /_/       |\n'),
-    write('|                                                       |\n'),
-    write('|                                                       |\n'),
-    write('|                                                       |\n'),
-    write('|               1 - Player vs Player                    |\n'),
-    write('|                                                       |\n'),
-    write('|               2 - Player vs Comp1.                    |\n'),
-    write('|                                                       |\n'),
-    write('|               3 - Comp1. vs Comp2.                    |\n'),
-    write('|                                                       |\n'),
-    write('|                                                       |\n'),
-    write('|               4 - Exit                                |\n'),
-    write('|                                                       |\n'),
-    write('|                                                       |\n'),
-    write('|                                                       |\n'),
-    write('|_______________________________________________________|\n'),
-
     readOption(Option),
-    validateOption(Option).
+    validateOption(Option),
+    getPlayers(Player1,LevelP1,Player2,LevelP2,Option).
+
+getPlayers(Player1,LevelP1,Player2,LevelP2,Option):-
+    Option==1,!,
+    Player1=black,
+    Player2=white.
+
+getPlayers(Player1,LevelP1,Player2,LevelP2,Option):-
+    Option==2,!,
+    getPlayerColor(Player1,LevelP1,Player2,LevelP2).
+
+getPlayers(Player1,LevelP1,Player2,LevelP2,Option):-
+    Option==3,!,
+    Player1=comp1,
+    Player2=comp2,
+    getCompDifficulty(comp1,LevelP1),
+    getCompDifficulty(comp2,LevelP2).
+
+getPlayers(Player1,Player2,Option):-
+    Option==4.
+
+getPlayerColor(Player1,LevelP1,Player2,LevelP2):-
+    repeat,
+    readPlayerColor(Color),
+    validatePlayerColor(Color),
+    setPlayerColor(Player1,LevelP1,Player2,LevelP2,Color).
+
+
+readPlayerColor(Color):-
+    printColor(Nothing),
+    write('Choose the your Color (1 or 2)\n'),
+    get_code(NColor),
+    subsRow(NColor,Color),
+    peek_char(Char),
+    Char=='\n', !,
+    get_char(Char).
+    
+readPlayerColor(Color):-
+    readPlayerColor(Color).
+
+validatePlayerColor(Color):-
+    (Color>0,Color<3);(write('Invalid Color!\n'),fail).
+
+setPlayerColor(Player1,LevelP1,Player2,LevelP2,Color):-
+    (Color==1),!,
+    Player1=comp1,
+    Player2=white,
+    getCompDifficulty(comp1,LevelP1).
+
+setPlayerColor(Player1,LevelP1,Player2,LevelP2,Color):-
+    Player1=Black,
+    Player2=comp2,
+    getCompDifficulty(comp2,LevelP2).
+
+getCompDifficulty(Comp,Level):-
+    repeat,
+    readDifficulty(Dif,Comp),
+    validateDifficulty(Dif),
+    subsDif(Dif,Level). 
+
+readDifficulty(Dif,Comp):-
+    printDifficulty(Nothing),
+    write('Choose the difficulty for '),write(Comp),write(' (1 or 2)\n'),
+    get_code(NDif),
+    subsRow(NDif,Dif),
+    peek_char(Char),
+    Char=='\n', !,
+    get_char(Char).
+    
+readDifficulty(Dif,Comp):-
+    readDifficulty(Dif,Comp).
+
+validateDifficulty(Dif):-
+    (Dif>0,Dif<3);(write('Invalid Difficulty!\n'),fail).
+
+
 
 
 
 readOption(Option):-
+    printMainMenu(Nothing),
     write('Choose the Playing option (1 to 3)\n'),
     get_code(NOption),
     subsRow(NOption,Option),
@@ -105,12 +156,6 @@ validateOption(Option):-
     Option<5);(write('Invalid option!\n'),fail).
                                                 
                                                     
-                                        
-
-
-
-
-
 
 getMove(Player, Board, CurrColumn, CurrRow, NewColumn, NewRow, Answer) :-
     skip(Answer),
