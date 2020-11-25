@@ -5,23 +5,6 @@ play:-
     
     gameLoop(GameState, Player1, Player2, LevelP1, LevelP2, 'n').
 
-    /*testingLoop(GameState,black).*/
-
-    /*valid_moves(NewBoard, Player, L),
-    write(L).*/
-
-
-testingLoop(GameState,Player):-
-    /*(trace;true),*/
-    /*searchForColor(GameState,orange,0,0,Col,Row),!,
-    write(Col-Row),write('\n').*/
-    mainMenu(Size,Option),
-    Option==4.
-   
-
-testingLoop(GameState,Player):-
-    write('There is no orange\n').
-
 
 /*Makes the move in person mode, corresponding to the black piece*/
 /*movePlayer1(+GameState, -NewBoard, +Player1, +Player2, +LevelP1, +LevelP2, -Skip)*/
@@ -304,7 +287,7 @@ value(GameState, Player, Value) :-
     valueCicle(NewBoard,Player,Value, 0).
 
 
-/**/
+/*Enters in a cycle to find the biggest value*/
 /*valueCicle(+Board, +Player, -Value, +OldValue)*/
 valueCicle(Board, Player, Value, OldValue):-
     
@@ -317,11 +300,13 @@ valueCicle(Board, Player, Value, OldValue):-
     valueCicle(UpdatedBoard,Player,Value,BiggestValue).
 
 
-/**/
+/*In case there are no more cells to visit, the cycle ends*/
+/*valueCicle(+Board, +Player, -Value, +OldValue)*/
 valueCicle(Board, Player, Value, OldValue):-
     Value is OldValue.
 
-/**/
+
+/*Gets the length of the group by giving a starting cell for that group*/
 /*getValue(-UpdatedBoard3, +Board, +Player, -ReturnValue3, +Value, +CurrColumn, +CurrRow)*/
 getValue(UpdatedBoard3, Board, Player, ReturnValue3, Value, CurrColumn, CurrRow) :-
     length(Board, Size),
@@ -363,19 +348,19 @@ getValue(UpdatedBoard3, Board, Player, ReturnValue3, Value, CurrColumn, CurrRow)
     getValue(UpdatedBoard3,NewBoard3, Player, ReturnValue3, NextValue3, ColLeft, CurrRow).
 
 
-/**/
+/*In case the given cell to explore is out the board limits or belongs to the other player*/
 /*getValue(-Board, +Board, +Player, -Value, +Value, +CurrColumn, +CurrRow)*/
 getValue(Board, Board, Player, Value, Value, CurrColumn, CurrRow).
 
 
-/**/
+/*Given a position, starts looking for the next cell that belongs to the color of the player*/
 /*searchForColor(+Board, +Color, +CurrCol, +CurrRow, -Col, -Row)*/
 searchForColor(Board, Color, CurrCol, CurrRow, Col, Row) :-
     nth0(CurrRow, Board, RowList),
     searchForColorInRow(RowList, Color, CurrCol, CurrRow, Col, Row).
 
 
-/**/
+/*In case the cell has not in the current row, switch to the next row*/
 /*searchForColor(+Board, +Color, +CurrCol, +CurrRow, -Col, -Row)*/
 searchForColor(Board, Color, CurrCol, CurrRow, Col, Row) :-
     length(Board, Size),
@@ -384,14 +369,14 @@ searchForColor(Board, Color, CurrCol, CurrRow, Col, Row) :-
     searchForColor(Board, Color, CurrCol, NewRow, Col, Row).
 
 
-/**/
+/*Given a position, starts looking for the cell in the current row*/
 /*searchForColorInRow(+RowList, +Color, +CurrCol, +CurrRow, -Col, -Row)*/
 searchForColorInRow(RowList, Color, CurrCol, CurrRow, Col, Row) :-
     nth0(CurrCol, RowList, Column),
     searchForColorInCol(RowList, Color, Column, CurrCol, CurrRow, Col, Row).
 
 
-/**/
+/*In case a cell is found*/
 /*searchForColorInCol(+RowList, +Color, +Column, +CurrCol, +CurrRow, -Col, -Row)*/
 searchForColorInCol(RowList, Color, Column, CurrCol, CurrRow, Col, Row) :-
     last(Column, CheckColor),
@@ -400,7 +385,7 @@ searchForColorInCol(RowList, Color, Column, CurrCol, CurrRow, Col, Row) :-
     Row is CurrRow.
 
 
-/**/
+/*In case the cell has not in the current column, switch to the next column*/
 /*searchForColorInCol(+RowList, +Color, +Column, +CurrCol, +CurrRow, -Col, -Row)*/
 searchForColorInCol(RowList, Color, Column, CurrCol, CurrRow, Col, Row):-
     length(RowList, Size),
