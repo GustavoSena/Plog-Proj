@@ -1,17 +1,14 @@
 play:-
-    mainMenu(Size,Player1,LevelP1,Player2,LevelP2,Option),
+    mainMenu(Size, Player1, LevelP1, Player2, LevelP2, Option),
     Option\=4,
     generateBoard(GameState,Size),
     
-    gameLoop(GameState,Player1,Player2,LevelP1,LevelP2,'n').
+    gameLoop(GameState, Player1, Player2, LevelP1, LevelP2, 'n').
 
-
-    
     /*testingLoop(GameState,black).*/
 
     /*valid_moves(NewBoard, Player, L),
     write(L).*/
-
 
 
 testingLoop(GameState,Player):-
@@ -26,190 +23,155 @@ testingLoop(GameState,Player):-
     write('There is no orange\n').
 
 
-
-/*gameLoop(GameState,Player, TimesSkip) :-
-    TimesSkip =\=2 , !,
-
-    displayGame(GameState, Player),
-    getMove(Player, GameState, CurrColumn, CurrRow, NewColumn, NewRow, Skip),
+/*Makes the move in person mode, corresponding to the black piece*/
+/*movePlayer1(+GameState, -NewBoard, +Player1, +Player2, +LevelP1, +LevelP2, -Skip)*/
+movePlayer1(GameState, NewBoard, Player1, Player2, LevelP1, LevelP2, Skip) :-
+    displayGame(GameState, Player1),
+    getMove(black, GameState, CurrCol, CurrRow, NewCol, NewRow, Skip),
+    
     (
         (Skip == 'n',
-        NewTimesSkip is 0,
-        move(GameState, CurrColumn, CurrRow, NewBoard, NewColumn, NewRow, Player)
+        move(GameState, CurrCol, CurrRow, NewBoard, NewCol, NewRow, Player1)
         )
     ;
         (Skip == 'y',
-        NewTimesSkip is TimesSkip + 1,
+        write('You skip turn!\n'),
+        NewBoard = GameState
+        )
+    ).
+
+
+/*Makes the move in person mode, corresponding to the white piece*/
+/*movePlayer2(+GameState, +Player1, +Player2, +LevelP1, +LevelP2, +LastSkip)*/
+movePlayer2(GameState, Player1, Player2, LevelP1, LevelP2, LastSkip) :-
+
+    ((Player1 == 'comp1', Player = 'black') ; (Player = Player1)),
+
+    displayGame(GameState, Player2),
+    getMove(Player2, GameState, CurrCol, CurrRow, NewCol, NewRow, Skip),
+    (
+        (Skip == 'n',
+        move(GameState, CurrCol, CurrRow, NewBoard, NewCol, NewRow, Player2)
+        )
+    ;
+        (Skip == 'y',
         write('You skip turn!\n'),
         NewBoard = GameState
         )
     ),
 
-    nextPlayer([Player],NextPlayer),
-    gameLoop(NewBoard, NextPlayer, NewTimesSkip).*/
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner)) 
+    ; 
+    (gameLoop(NewBoard, Player1, Player2, LevelP1, LevelP2, Skip))).
 
 
-/*choose_move(+GameState, +Player, +Level, -Move).*/
+/*Makes the move in computer mode, corresponding to the black piece*/
+/*moveComp1(+GameState, -NewBoard, +Player1, +Player2, +LevelP1, +LevelP2, -Skip)*/
+moveComp1(GameState, NewBoard, Player1, Player2, LevelP1, LevelP2, Skip) :-
+    
+    ((Player1 == 'comp1', Player = 'black') ; (Player = Player1)),
 
+    displayGame(GameState, Player),
+    choose_move(GameState, Player, LevelP2, CurrCol-CurrRow-NewCol-NewRow, Skip),
 
-
-gameLoop(GameState,black,white,LevelP1,LevelP2,LastSkip) :-
-
-    displayGame(GameState, black),
-    getMove(black, GameState, CurrCol, CurrRow, NewCol, NewRow, Skip),
     (
         (Skip == 'n',
-        move(GameState, CurrCol, CurrRow, GameState2, NewCol, NewRow, black)
+        move(GameState, CurrCol, CurrRow, NewBoard, NewCol, NewRow, Player)
         )
     ;
         (Skip == 'y',
         write('You skip turn!\n'),
-        GameState2 = GameState
+        NewBoard = GameState
         )
-    ),
-    (\+(Skip=='y',LastSkip=='y')),!,
-    displayGame(GameState2, white),
-    getMove(white, GameState2, CurrCol2, CurrRow2, NewCol2, NewRow2, Skip2),
-    (
-        (Skip2 == 'n',
-        move(GameState2, CurrCol2, CurrRow2, NewBoard, NewCol2, NewRow2, white)
-        )
-    ;
-        (Skip2 == 'y',
-        write('You skip turn!\n'),
-        NewBoard = GameState2
-        )
-    ),
-
-    (\+(Skip=='y',Skip2=='y')),!,
-
-    gameLoop(NewBoard, black,white,LevelP1,LevelP2,Skip2).
+    ).
 
 
+/*Makes the move in computer mode, corresponding to the white piece*/
+/*moveComp2(+GameState, +Player1, +Player2, +LevelP1, +LevelP2, +LastSkip)*/
+moveComp2(GameState, Player1, Player2, LevelP1, LevelP2, LastSkip) :-
 
+    ((Player2 == 'comp2', Player = 'white') ; (Player = Player2)),
 
+    displayGame(GameState, Player),
+    choose_move(GameState, Player, LevelP2, CurrCol-CurrRow-NewCol-NewRow, Skip),
 
-gameLoop(GameState,black,comp2,LevelP1,LevelP2,LastSkip) :-
-
-    displayGame(GameState, black),
-    getMove(black, GameState, CurrCol, CurrRow, NewCol, NewRow, Skip),
     (
         (Skip == 'n',
-        move(GameState, CurrCol, CurrRow, GameState2, NewCol, NewRow, black)
+        move(GameState, CurrCol, CurrRow, NewBoard, NewCol, NewRow, Player)
         )
     ;
         (Skip == 'y',
         write('You skip turn!\n'),
-        GameState2 = GameState
-        )
-    ),
-    (\+(Skip=='y',LastSkip=='y')),!,
-    displayGame(GameState2, white),
-    choose_move(GameState2, white, LevelP2, CurrCol2-CurrRow2-NewCol2-NewRow2-Skip2),
-    (
-        (Skip2 == 'n',
-        move(GameState2, CurrCol2, CurrRow2, NewBoard, NewCol2, NewRow2, white)
-        )
-    ;
-        (Skip2 == 'y',
-        write('You skip turn!\n'),
-        NewBoard = GameState2
+        NewBoard = GameState
         )
     ),
 
-    (\+(Skip=='y',Skip2=='y')),!,
-
-    gameLoop(NewBoard, black,comp2,LevelP1,LevelP2,Skip2).
-
-gameLoop(GameState,comp1,white,LevelP1,LevelP2,LastSkip) :-
-
-    displayGame(GameState, black),
-    choose_move(GameState, black, LevelP1, CurrCol-CurrRow-NewCol-NewRow-Skip),
-    (
-        (Skip == 'n',
-        move(GameState, CurrCol, CurrRow, GameState2, NewCol, NewRow, black)
-        )
-    ;
-        (Skip == 'y',
-        write('You skip turn!\n'),
-        GameState2 = GameState
-        )
-    ),
-    (\+(Skip=='y',LastSkip=='y')),!,
-    displayGame(GameState2, white),
-    getMove(white, GameState2, CurrCol2, CurrRow2, NewCol2, NewRow2, Skip2),
-    (
-        (Skip2 == 'n',
-        move(GameState2, CurrCol2, CurrRow2, NewBoard, NewCol2, NewRow2, white)
-        )
-    ;
-        (Skip2 == 'y',
-        write('You skip turn!\n'),
-        NewBoard = GameState2
-        )
-    ),
-
-    (\+(Skip=='y',Skip2=='y')),!,
-
-    gameLoop(NewBoard, comp1,white,LevelP1,LevelP2,Skip2).
-
-gameLoop(GameState,comp1,comp2,LevelP1,LevelP2,LastSkip) :-
-
-    displayGame(GameState, black),
-    choose_move(GameState, black, LevelP1, CurrCol-CurrRow-NewCol-NewRow-Skip),
-    (
-        (Skip == 'n',
-        move(GameState, CurrCol, CurrRow, GameState2, NewCol, NewRow, black)
-        )
-    ;
-        (Skip == 'y',
-        write('You skip turn!\n'),
-        GameState2 = GameState
-        )
-    ),
-    (\+(Skip=='y',LastSkip=='y')),!,
-    displayGame(GameState2, white),
-    choose_move(GameState2, white, LevelP2, CurrCol2-CurrRow2-NewCol2-NewRow2-Skip2),
-    (
-        (Skip2 == 'n',
-        move(GameState2, CurrCol2, CurrRow2, NewBoard, NewCol2, NewRow2, white)
-        )
-    ;
-        (Skip2 == 'y',
-        write('You skip turn!\n'),
-        NewBoard = GameState2
-        )
-    ),
-
-    (\+(Skip=='y',Skip2=='y')),!,
-
-    gameLoop(NewBoard, comp1,comp2,LevelP1,LevelP2,Skip2).
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner)) 
+    ; 
+    (gameLoop(NewBoard, Player1, Player2, LevelP1, LevelP2, Skip))).
 
 
-gameLoop(GameState,Player1, Player2,LevelP1,LevelP2,LastSkip) :-
-    game_over(GameState, Winner),
-    printWinner(Winner).
+/*Enters in a game cycle in Person-Person mode*/
+/*gameLoop(+GameState, +black, +white, +LevelP1, +LevelP2, +LastSkip)*/
+gameLoop(GameState, black, white, LevelP1, LevelP2, LastSkip) :-
+
+    movePlayer1(GameState, NewBoard, black, white, LevelP1, LevelP2, Skip),
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner)) 
+    ; 
+    (movePlayer2(NewBoard, black, white, LevelP1, LevelP2, Skip))).
     
 
+/*Enters in a game cycle in Person-Computer mode*/
+/*gameLoop(+GameState, +black, +comp2, +LevelP1, +LevelP2, +LastSkip)*/
+gameLoop(GameState, black, comp2, LevelP1, LevelP2, LastSkip) :-
 
+    movePlayer1(GameState, NewBoard, black, comp2, LevelP1, LevelP2, Skip),
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner)) 
+    ; 
+    (moveComp2(NewBoard, black, comp2, LevelP1, LevelP2, Skip))).
+
+
+/*Enters in a game cycle in Computer-Person mode*/
+/*gameLoop(+GameState, +comp1, +white, +LevelP1, +LevelP2, +LastSkip)*/
+gameLoop(GameState, comp1, white, LevelP1, LevelP2, LastSkip) :-
+
+    moveComp1(GameState, NewBoard, comp1, white, LevelP1, LevelP2, Skip),
+    write(Skip), write('\n'),
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner)) 
+    ; 
+    (movePlayer2(NewBoard, comp1, white, LevelP1, LevelP2, Skip))).
+
+
+/*Enters in a game cycle in Computer-Computer mode*/
+/*gameLoop(+GameState, +comp1, +comp2, +LevelP1, +LevelP2, +LastSkip)*/
+gameLoop(GameState, comp1, comp2, LevelP1, LevelP2, LastSkip) :-
+    sleep(1),
+    moveComp1(GameState, NewBoard, comp1, comp2, LevelP1, LevelP2, Skip),
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner)) 
+    ; 
+    (sleep(1), moveComp2(NewBoard, comp1, comp2, LevelP1, LevelP2, Skip))).
     
-
-
+    
 
 /*Executes a move, obtaining a new board*/
+/*move(+OldBoard, +OldColumn, +OldRow, -NewBoard, +NewColumn, +NewRow, +Player)*/
 move(OldBoard, OldColumn, OldRow, NewBoard, NewColumn, NewRow, Player) :-
     insertStack(OldBoard, UpdBoard, NewColumn, NewRow, [Player]),
     removeStack(UpdBoard, NewBoard, OldColumn, OldRow, [Player]).
 
+
 /*Inserts the new piece into the stack to play*/
-insertStack(OldBoard,NewBoard,Column,Row,Color):-
+/*insertStack(+OldBoard, -NewBoard, +Column, +Row, +Color)*/
+insertStack(OldBoard, NewBoard, Column, Row, Color) :-
     nth0(Row,OldBoard,RowList),
     nth0(Column,RowList,ColList),
     append(ColList,Color,NewCol),
     replace_nth0(RowList,Column,ColList,NewCol,NewRow),
     replace_nth0(OldBoard,Row,RowList,NewRow,NewBoard).
 
-/*Removes the piece from the stack to play*/ 
+
+/*Removes the current piece from the stack to play*/ 
+/*removeStack(+OldBoard, -NewBoard, +Column, +Row, -Color)*/
 removeStack(OldBoard, NewBoard, Column, Row, Color) :-
     nth0(Row,OldBoard,RowList),
     nth0(Column,RowList,ColList),
@@ -223,25 +185,60 @@ removeStack(OldBoard, NewBoard, Column, Row, Color) :-
     replace_nth0(RowList,Column,ColList,NewCol,NewRow),
     replace_nth0(OldBoard,Row,RowList,NewRow,NewBoard).
 
+
+/*Gets a random move as a computer move*/
+/*choose_move(+GameState, +Player, +'rand', -CurrCol-CurrRow-NewCol-NewRow, -Skip)*/
+choose_move(GameState, Player, 'rand', CurrCol-CurrRow-NewCol-NewRow, Skip) :-
+    valid_moves(GameState, Player, ListOfMoves),
+    length(ListOfMoves, S),
+    Size is S - 1,
+    Size > 0,
+    Skip = 'n',
+
+    random(0, Size, Random), 
+    nth0(Random, ListOfMoves, Value-CurrCol-CurrRow-NewCol-NewRow). 
+
+
+/*Gets a greedy move as a computer move*/
+/*choose_move(+GameState, +Player, +'greedy', -CurrCol-CurrRow-NewCol-NewRow, -Skip)*/
+choose_move(GameState, Player, 'greedy', CurrCol-CurrRow-NewCol-NewRow, Skip) :-
+    valid_moves(GameState, Player, ListOfMoves),
+    length(ListOfMoves, Size),
+    Size > 0,
+    Skip = 'n',
+
+    nth0(0, ListOfMoves, Value-CurrCol-CurrRow-NewCol-NewRow). 
+
+
+/*When there are no more valid moves*/
+/*choose_move(+GameState, +Player, +Level, -CurrCol-CurrRow-NewCol-NewRow, -'y')*/
+choose_move(GameState, Player, Level, CurrCol-CurrRow-NewCol-NewRow, 'y').
+
+
 /*Gives the list of possible moves depending on the Board and the player*/
+/*valid_moves(+Board, +Player, -ListOfMoves)*/
 valid_moves(Board, Player, ListOfMoves) :-
-    setof(Value-CurrColumn-CurrRow-NewColumn-NewRow, NewBoard^UpdatedBoard^(makemove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow), move(Board, CurrColumn, CurrRow, NewBoard, NewColumn, NewRow, Player), once(getValue(UpdatedBoard, NewBoard, Player, Value, 0, NewColumn, NewRow))), List),
+    setof(Value-CurrColumn-CurrRow-NewColumn-NewRow, NewBoard^UpdatedBoard^(generateMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow), move(Board, CurrColumn, CurrRow, NewBoard, NewColumn, NewRow, Player), once(getValue(UpdatedBoard, NewBoard, Player, Value, 0, NewColumn, NewRow))), List),
     reverse(List, ListOfMoves).
 
-/*Generates possible moves*/   
-makemove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow) :-
-    checkPosition(Player, Board, CurrColumn-CurrRow),
-    checkMove(Player,Board, CurrColumn-CurrRow-NewColumn-NewRow).
 
-/*Check if the piece belongs to the player*/
-checkPosition(Player,Board, CurrColumn-CurrRow) :-
+/*Generates possible moves*/   
+/*generateMove(+Player, +Board, -CurrColumn-CurrRow-NewColumn-NewRow)*/
+generateMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow) :-
+    checkGeneratePosition(Player, Board, CurrColumn-CurrRow),
+    checkGenerateMove(Player,Board, CurrColumn-CurrRow-NewColumn-NewRow).
+
+/*Checks if the generated piece belongs to the player*/
+/*checkGeneratePosition(+Player, +Board, -CurrColumn-CurrRow)*/
+checkGeneratePosition(Player, Board, CurrColumn-CurrRow) :-
     nth0(CurrRow,Board,RowList),
     nth0(CurrColumn,RowList,ColList),
     last(ColList,Color),
     Color = Player.
 
-/*Checks the new position*/ 
-checkMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow) :-
+/*Checks the possible generated position*/ 
+/*checkGenerateMove(+Player, +Board, -CurrColumn-CurrRow-NewColumn-NewRow)*/
+checkGenerateMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow) :-
     /*up movement*/
     NewRow is CurrRow - 1,
     NewRow >= 0,
@@ -271,6 +268,7 @@ checkMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow) :-
     fail.
 
 /*Checks whether the proposed movement is valid*/
+/*checksProposedMove(+Player, +Board, -CurrColumn-CurrRow-NewColumn-NewRow)*/
 checksProposedMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow) :-
 
     /*Checks if the piece belong to the player*/
@@ -294,7 +292,9 @@ game_over(GameState, Winner) :-
     value(GameState,black,BlackScore),
     value(GameState,white,WhiteScore),
     
-    getWinner(WhiteScore, BlackScore, Winner).
+    getWinner(WhiteScore, BlackScore, Winner),
+
+    printWinner(Winner).
 
 
 /*Gives the value of the largest group for a given board and player*/
@@ -310,15 +310,9 @@ valueCicle(Board, Player, Value, OldValue):-
     
     searchForColor(Board,Player,0,0,Col,Row),!,
     
-    /*write(Col-Row),write('(col and row)\n'),*/
-    /*(trace;true),*/
     getValue(UpdatedBoard,Board,Player,NewValue,0,Col,Row),
-    /*write(UpdatedBoard), write('\n'),*/
-   /* (notrace;true),*/
-    /*write(NewValue-OldValue),write('(new and old values)\n'),*/
 
     getBiggestValue(NewValue,OldValue,BiggestValue),
-    /*write(BiggestValue),write('(Biggest value )\n'),*/
 
     valueCicle(UpdatedBoard,Player,Value,BiggestValue).
 
@@ -328,14 +322,14 @@ valueCicle(Board, Player, Value, OldValue):-
     Value is OldValue.
 
 /**/
-getValue(UpdatedBoard3, Board, Player, ReturnValue3, Value, CurrColumn, CurrRow):-
+/*getValue(-UpdatedBoard3, +Board, +Player, -ReturnValue3, +Value, +CurrColumn, +CurrRow)*/
+getValue(UpdatedBoard3, Board, Player, ReturnValue3, Value, CurrColumn, CurrRow) :-
     length(Board, Size),
-    /*write(CurrColumn-CurrRow-Size), write('\n'),*/
     
-    (CurrRow>=0,
-    CurrRow<Size,
-    CurrColumn<Size,
-    CurrColumn>=0),
+    (CurrRow >= 0,
+    CurrRow < Size,
+    CurrColumn < Size,
+    CurrColumn >= 0),
  
     getCellColor(Board, CurrColumn, CurrRow, Color),
     
@@ -344,10 +338,8 @@ getValue(UpdatedBoard3, Board, Player, ReturnValue3, Value, CurrColumn, CurrRow)
     
     replaceValue(Board,NewBoard,CurrColumn,CurrRow,Player),
     
-    /*write(NewBoard), write('\n'),*/
     NewValue is Value + 1,
 
-    
     /*down movement*/
     RowDown is CurrRow + 1,
     getValue(UpdatedBoard, NewBoard, Player, ReturnValue, NewValue, CurrColumn, RowDown),
@@ -365,57 +357,53 @@ getValue(UpdatedBoard3, Board, Player, ReturnValue3, Value, CurrColumn, CurrRow)
     getValue(UpdatedBoard2,NewBoard2, Player, ReturnValue2, NextValue2, CurrColumn, RowUp),
     NextValue3 is ReturnValue2,
     NewBoard3 = UpdatedBoard2,
-    
+
     /*left movement*/
     ColLeft is CurrColumn - 1,
     getValue(UpdatedBoard3,NewBoard3, Player, ReturnValue3, NextValue3, ColLeft, CurrRow).
 
+
 /**/
+/*getValue(-Board, +Board, +Player, -Value, +Value, +CurrColumn, +CurrRow)*/
 getValue(Board, Board, Player, Value, Value, CurrColumn, CurrRow).
 
-/**/
-searchForColor(Board,Color,CurrCol,CurrRow,Col,Row):-
-    nth0(CurrRow,Board,RowList),
-    searchForColorInRow(RowList,Color,CurrCol,CurrRow,Col,Row).
 
 /**/
-searchForColor(Board,Color,CurrCol,CurrRow,Col,Row):-
-    length(Board,Size),
-    NewRow is CurrRow+1,
-    NewRow<Size,!,
-    searchForColor(Board,Color,CurrCol,NewRow,Col,Row).
+/*searchForColor(+Board, +Color, +CurrCol, +CurrRow, -Col, -Row)*/
+searchForColor(Board, Color, CurrCol, CurrRow, Col, Row) :-
+    nth0(CurrRow, Board, RowList),
+    searchForColorInRow(RowList, Color, CurrCol, CurrRow, Col, Row).
+
 
 /**/
-searchForColorInRow(RowList,Color,CurrCol,CurrRow,Col,Row):-
-    nth0(CurrCol,RowList,Column),
-    searchForColorInCol(RowList,Color,Column,CurrCol,CurrRow,Col,Row).
-    
+/*searchForColor(+Board, +Color, +CurrCol, +CurrRow, -Col, -Row)*/
+searchForColor(Board, Color, CurrCol, CurrRow, Col, Row) :-
+    length(Board, Size),
+    NewRow is CurrRow + 1,
+    NewRow < Size, !,
+    searchForColor(Board, Color, CurrCol, NewRow, Col, Row).
+
+
 /**/
-searchForColorInCol(RowList,Color,Column,CurrCol,CurrRow,Col,Row):-
-    last(Column,CheckColor),
-    Color==CheckColor,
+/*searchForColorInRow(+RowList, +Color, +CurrCol, +CurrRow, -Col, -Row)*/
+searchForColorInRow(RowList, Color, CurrCol, CurrRow, Col, Row) :-
+    nth0(CurrCol, RowList, Column),
+    searchForColorInCol(RowList, Color, Column, CurrCol, CurrRow, Col, Row).
+
+
+/**/
+/*searchForColorInCol(+RowList, +Color, +Column, +CurrCol, +CurrRow, -Col, -Row)*/
+searchForColorInCol(RowList, Color, Column, CurrCol, CurrRow, Col, Row) :-
+    last(Column, CheckColor),
+    Color == CheckColor,
     Col is CurrCol,
     Row is CurrRow.
 
+
 /**/
-searchForColorInCol(RowList,Color, Column, CurrCol,CurrRow,Col,Row):-
-    length(RowList,Size),
+/*searchForColorInCol(+RowList, +Color, +Column, +CurrCol, +CurrRow, -Col, -Row)*/
+searchForColorInCol(RowList, Color, Column, CurrCol, CurrRow, Col, Row):-
+    length(RowList, Size),
     NewCol is CurrCol + 1,
-    NewCol<Size,!,
-    searchForColorInRow(RowList,Color, NewCol, CurrRow,Col,Row).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    NewCol < Size, !,
+    searchForColorInRow(RowList, Color, NewCol, CurrRow, Col, Row).

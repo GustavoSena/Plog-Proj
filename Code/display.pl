@@ -1,9 +1,10 @@
-
 generateBoard(Board,Size):-
     RowN is Size,
     generateBoard([],Board,RowN,Size).
 
+
 generateBoard(FinalBoard,FinalBoard,0,Size).
+
 
 generateBoard(InitBoard,FinalBoard,RowN,Size):-
     generateRow([],Row,RowN,Size),
@@ -11,9 +12,12 @@ generateBoard(InitBoard,FinalBoard,RowN,Size):-
     NewRowN is RowN - 1,
     generateBoard(NewBoard,FinalBoard,NewRowN,Size).
 
+
 generateRow(InitRow,FinalRow,0,Size).
 
+
 generateRow(FinalRow,FinalRow,Rown,0).
+
 
 generateRow(InitRow,FinalRow,RowN,Size):-
     generateCell(Cell,RowN, Size),
@@ -52,12 +56,16 @@ printBoard(Size,N,[X|L]):-
     write('\n'),
     printBar(Size+1),
     printBoard(Size,M,L).  
+
+
 printBoard(Size,M,[]).
+
 
 printLine([X|L]) :-
     printCell(X),
     write('|'),
     printLine(L).
+
 
 printLine([]).
 
@@ -74,19 +82,21 @@ printCell(Cell):-
 printBar(0):-
     write('\n').
 
+
 printBar(Size):-
     write('---|'),
     NewSize is Size-1,
     printBar(NewSize).
 
 
-
 printHead(Size):-
     write('   |'),
     printHead(Size,0).
 
+
 printHead(Size,Size):-
     write('\n').
+
 
 printHead(Size,Index):-
     write(' '),
@@ -95,11 +105,6 @@ printHead(Size,Index):-
     write(S),
     write(' |'),
     printHead(Size, NewIndex).
-
-
-
-
-
 
 
 
@@ -129,11 +134,6 @@ printMainMenu(Nothing):-
     write('|                                                       |\n'),
     write('|                                                       |\n'),
     write('|_______________________________________________________|\n').
-
-
-
-
-
 
 
 
@@ -179,9 +179,6 @@ printColor(Nothing):-
     write('|                                                       |\n'),
     write('|_______________________________________________________|\n').
 
-    
-
-
 
 
 printDifficulty(Nothing):-
@@ -206,7 +203,3 @@ printDifficulty(Nothing):-
     write('|                                                       |\n'),
     write('|                                                       |\n'),
     write('|_______________________________________________________|\n').
-
-
-
-                               

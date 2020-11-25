@@ -1,12 +1,13 @@
 /*Gets the size of the board and the mode of game*/
-/*mainMenu(-Size, -Option)*/
-mainMenu(Size,Option):-
+/*mainMenu(-Size, -Player1, -LevelP1, -Player2, -LevelP2, -Option)*/
+mainMenu(Size, Player1, LevelP1, Player2, LevelP2, Option) :-
     decideSizeBoard(Size),
-    decidePlayers(Player1,LevelP1,Player2,LevelP2,Option).
+    decidePlayers(Player1, LevelP1, Player2, LevelP2, Option).
+
 
 /*Gets the size of the board*/
 /*decideSizeBoard(-Size)*/
-decideSizeBoard(Size):-
+decideSizeBoard(Size) :-
     repeat,
     readSize(NSize),
     validateSize(NSize),
@@ -15,6 +16,7 @@ decideSizeBoard(Size):-
     readConfirmation(Conf,NSize),
     validateConfirmation(Conf,Size,NSize).  
     
+
 /*Reads the input from the user to know the size of the board he wants*/
 /*readConfirmation(-Conf, +Size)*/
 readConfirmation(Conf, Size) :-
@@ -24,10 +26,12 @@ readConfirmation(Conf, Size) :-
     Char=='\n', !,
     get_char(Char).
 
+
 /*In case the input is not valid*/   
 /*readConfirmation(-Conf, +Size)*/ 
 readConfirmation(Conf, Size) :-
     readConfirmation(Conf,Size).
+
 
 /*If the answer from the user is valid*/
 /*validateConfirmation(+Conf, -Size, +NSize)*/
@@ -35,14 +39,16 @@ validateConfirmation(Conf, Size, NSize) :-
     Conf=='y',!,
     Size is NSize.
 
+
 /*If the answer from the user is not valid*/
 /*validateConfirmation(+Conf, -Size, +NSize)*/
 validateConfirmation(Conf, Size, NSize) :-
     decideSizeBoard(Size).
 
+
 /*Reads the input from the user to know the size of the board he wants*/
 /*readSize(-Size)*/
-readSize(Size):-
+readSize(Size) :-
     write('Choose the size of the board (3 to 9)\n'),
     get_code(NSize),
     subsRow(NSize,Size),
@@ -50,14 +56,16 @@ readSize(Size):-
     Char=='\n', !,
     get_char(Char).
 
+
 /*In case the input is not valid*/ 
 /*readSize(-Size)*/
 readSize(Size) :-
     readSize(Size).
 
+
 /*If the answer from the user is valid*/
 /*validateSize(+Size)*/
-validateSize(Size):-
+validateSize(Size) :-
     write(Size),write('-Size\n'),
     (Size>2, Size<10)
     ;
@@ -65,40 +73,57 @@ validateSize(Size):-
 
 
 /*Gets the player's option to know the game mode he wants to play*/
-/*decidePlayers(-Option)*/
-decidePlayers(Player1,LevelP1,Player2,LevelP2,Option):-
+/*decidePlayers(-Player1, -LevelP1, -Player2, -LevelP2, -Option)*/
+decidePlayers(Player1, LevelP1, Player2, LevelP2, Option) :-
     repeat,
     readOption(Option),
     validateOption(Option),
-    getPlayers(Player1,LevelP1,Player2,LevelP2,Option).
+    getPlayers(Player1, LevelP1, Player2, LevelP2, Option).
 
-getPlayers(Player1,LevelP1,Player2,LevelP2,Option):-
-    Option==1,!,
-    Player1=black,
-    Player2=white.
 
-getPlayers(Player1,LevelP1,Player2,LevelP2,Option):-
-    Option==2,!,
-    getPlayerColor(Player1,LevelP1,Player2,LevelP2).
+/*In the case the user has selected option 1, which means the game mode is Person-Person*/
+/*getPlayers(-Player1, -LevelP1, -Player2, -LevelP2, +Option)*/
+getPlayers(Player1, LevelP1, Player2, LevelP2, Option) :-
+    Option == 1, !,
+    Player1 = black,
+    Player2 = white.
 
-getPlayers(Player1,LevelP1,Player2,LevelP2,Option):-
-    Option==3,!,
-    Player1=comp1,
-    Player2=comp2,
-    getCompDifficulty(comp1,LevelP1),
-    getCompDifficulty(comp2,LevelP2).
 
-getPlayers(Player1,Player2,Option):-
+/*In the case the user has selected option 2, which means the game mode is Person-Computer*/
+/*getPlayers(-Player1, -LevelP1, -Player2, -LevelP2, +Option)*/
+getPlayers(Player1, LevelP1, Player2, LevelP2, Option) :-
+    Option == 2, !,
+    getPlayerColor(Player1, LevelP1, Player2, LevelP2).
+
+
+/*In the case the user has selected option 3, which means the game mode is Computer-Computer*/
+/*getPlayers(-Player1, -LevelP1, -Player2, -LevelP2, +Option)*/
+getPlayers(Player1, LevelP1, Player2, LevelP2, Option) :-
+    Option == 3, !,
+    Player1 = comp1,
+    Player2 = comp2,
+    getCompDifficulty(comp1, LevelP1),
+    getCompDifficulty(comp2, LevelP2).
+
+
+/*In the case the user has selected option 4, which means that the user wants to exit the game*/
+/*getPlayers(+Player1, +Player2, +Option)*/
+getPlayers(Player1, Player2, Option) :-
     Option==4.
 
-getPlayerColor(Player1,LevelP1,Player2,LevelP2):-
+
+/*The user chooses the color of his pieces*/
+/*getPlayerColor(-Player1, -LevelP1, -Player2, -LevelP2)*/
+getPlayerColor(Player1, LevelP1, Player2, LevelP2) :-
     repeat,
     readPlayerColor(Color),
     validatePlayerColor(Color),
-    setPlayerColor(Player1,LevelP1,Player2,LevelP2,Color).
+    setPlayerColor(Player1, LevelP1, Player2, LevelP2, Color).
 
 
-readPlayerColor(Color):-
+/*Reads the input from the user to know what color are their pieces*/
+/*readPlayerColor(-Color)*/
+readPlayerColor(Color) :-
     printColor(Nothing),
     write('Choose the your Color (1 or 2)\n'),
     get_code(NColor),
@@ -106,44 +131,72 @@ readPlayerColor(Color):-
     peek_char(Char),
     Char=='\n', !,
     get_char(Char).
-    
-readPlayerColor(Color):-
+
+
+/*In case the input is not valid*/
+/*readPlayerColor(Color)*/
+readPlayerColor(Color) :-
     readPlayerColor(Color).
 
-validatePlayerColor(Color):-
-    (Color>0,Color<3);(write('Invalid Color!\n'),fail).
 
-setPlayerColor(Player1,LevelP1,Player2,LevelP2,Color):-
-    (Color==1),!,
-    Player1=comp1,
-    Player2=white,
-    getCompDifficulty(comp1,LevelP1).
+/*Check if the answer from the user is valid or not*/
+/*validatePlayerColor(Color)*/
+validatePlayerColor(Color) :-
+    (Color > 0, Color < 3)
+    ;
+    (write('Invalid Color!\n'), fail).
 
-setPlayerColor(Player1,LevelP1,Player2,LevelP2,Color):-
-    Player1=Black,
-    Player2=comp2,
-    getCompDifficulty(comp2,LevelP2).
 
-getCompDifficulty(Comp,Level):-
+/*Assigns to the user the color white*/
+/*setPlayerColor(-Player1, -LevelP1, -Player2, -LevelP2, +Color)*/
+setPlayerColor(Player1, LevelP1, Player2, LevelP2, Color) :-
+    (Color == 1), !,
+    Player1 = comp1,
+    Player2 = white,
+    getCompDifficulty(comp1, LevelP1).
+
+
+/*Assigns to the user the color black*/
+/*setPlayerColor(-Player1, -LevelP1, -Player2, -LevelP2, +Color)*/
+setPlayerColor(Player1, LevelP1, Player2, LevelP2, Color) :-
+    Player1 = Black,
+    Player2 = comp2,
+    getCompDifficulty(comp2, LevelP2).
+
+
+/*The user chooses the difficulty of the game*/
+/*getCompDifficulty(+Comp, -Level)*/
+getCompDifficulty(Comp, Level) :-
     repeat,
-    readDifficulty(Dif,Comp),
+    readDifficulty(Dif, Comp),
     validateDifficulty(Dif),
-    subsDif(Dif,Level). 
+    subsDif(Dif, Level). 
 
-readDifficulty(Dif,Comp):-
+
+/*Reads the input from the user to know the difficulty of the game*/
+/*readDifficulty(-Dif, +Comp)*/
+readDifficulty(Dif, Comp) :-
     printDifficulty(Nothing),
-    write('Choose the difficulty for '),write(Comp),write(' (1 or 2)\n'),
+    write('Choose the difficulty for '), write(Comp), write(' (1 or 2)\n'),
     get_code(NDif),
     subsRow(NDif,Dif),
     peek_char(Char),
     Char=='\n', !,
     get_char(Char).
-    
-readDifficulty(Dif,Comp):-
-    readDifficulty(Dif,Comp).
 
-validateDifficulty(Dif):-
-    (Dif>0,Dif<3);(write('Invalid Difficulty!\n'),fail).
+
+/*In case the input is not valid*/
+/*readDifficulty(-Dif, +Comp)*/
+readDifficulty(Dif, Comp) :-
+    readDifficulty(Dif, Comp).
+
+
+/*Checks if the answer from the user is valid or not*/
+/*validateDifficulty(Dif)*/
+validateDifficulty(Dif) :-
+    (Dif > 0, Dif < 3)
+    ;
+    (write('Invalid Difficulty!\n'), fail).
 
 
 /*Reads the input from the user to know which game mode he wants to play*/
@@ -165,9 +218,9 @@ readOption(Option):-
 /*If the answer from the user is valid*/
 /*validateOption(+Option)*/
 validateOption(Option):-
-    (Option>0, Option<5)
+    (Option > 0, Option < 5)
     ;
-    (write('Invalid option!\n'),fail).
+    (write('Invalid option!\n'), fail).
 
 /*Gets the movement that the user intends to make*/
 /*getMove(+Player, +Board, -CurrColumn, -CurrRow, -NewColumn, -NewRow, -Answer)*/
@@ -226,7 +279,6 @@ checkNewCoord(Player, Board, CurrColumn, CurrRow, NewColumn, NewRow) :-
     nth0(NewColumn,RowList,ColList),
     last(ColList,Color),
     Color \= Player,
-    write(Color-Player),write('\n'),
 
     /*Checks if the two stacks are the same size*/
     nth0(CurrRow,Board,OldRow),
@@ -242,7 +294,7 @@ checkNewCoord(Player, Board, CurrColumn, CurrRow, NewColumn, NewRow) :-
         ; 
         /*Adjacent row*/
         (abs(CurrColumn-NewColumn)=:=1, abs(CurrRow-NewRow)=:=0)
-    )
+    ).
 
 /*In case the new position is not valid*/ 
 /*checkNewCoord(+Player, +Board, +CurrColumn, +CurrRow, +NewColumn, +NewRow)*/

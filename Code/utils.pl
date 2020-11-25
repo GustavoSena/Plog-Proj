@@ -63,8 +63,8 @@ subsRow(61, 13).
 subsPlayer(white,S):-S='White'.
 subsPlayer(black,S):-S='Black'.
 
-subsDif(1,random).
-subsDif(1,greedy).
+subsDif(1,rand).
+subsDif(2,greedy).
 
 
 
