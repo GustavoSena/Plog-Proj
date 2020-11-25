@@ -129,12 +129,53 @@ getBiggestValue(Value1, Value2, Biggest) :-
 
 /*Gets the winner. In this case, the Black piece player is the winner*/
 /*getWinner(+WhiteScore, +BlackScore, -Winner)*/
-getWinner(WhiteScore, BlackScore, Winner) :-
+/*getWinner(WhiteScore, BlackScore, Winner) :-
    WhiteScore < BlackScore, !,
-   Winner = black.
+   Winner = black.*/
 
 
 /*Gets the winner. In this case, the White piece player is the winner*/
 /*getWinner(+WhiteScore, +BlackScore, -Winner)*/
-getWinner(WhiteScore, BlackScore, Winner) :-
-   Winner = white.
+/*getWinner(WhiteScore, BlackScore, Winner) :-
+   Winner = white.*/
+
+
+
+/*Gets the winner. In this case, the Black piece player is the winner*/
+/*getWinner(+WhiteScore, +BlackScore, -Winner)*/
+getWinner(WhiteScore, BlackScore, Winner,LastPlayed) :-
+   
+   samsort(@>=, WhiteScore,WhiteOrdered),
+   samsort(@>=, BlackScore,BlackOrdered),
+
+   getBiggestList(WhiteOrdered,BlackOrdered,Winner,LastPlayed).
+
+
+getBiggestList([B1|List1],[B2|List2],Biggest,LastPlayed):-
+   B1==B2, !,
+   getBiggestList(List1,List2,Biggest,LastPlayed).
+
+getBiggestList([],[],Biggest,LastPlayed):-
+   Biggest=LastPlayed. 
+
+getBiggestList([],[B2|List2],Biggest,LastPlayed):-
+   Biggest=black.
+
+getBiggestList([B1|List1],[],Biggest,LastPlayed):-
+   Biggest=white.
+
+
+getBiggestList([B1|List1],[B2|List2],Biggest,LastPlayed):-
+   B1<B2, !,
+   Biggest=white.
+
+getBiggestList([B1|List1],[B2|List2],Biggest,LastPlayed):-
+   B1>B2, !,
+   Biggest=black.
+   
+
+
+
+   
+
+

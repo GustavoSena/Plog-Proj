@@ -4,7 +4,8 @@
 :-consult('input.pl').
 :- use_module(library(lists)).
 :- use_module(library(random)).
-:-use_module(library(system)).
+:- use_module(library(system)).
+:- use_module(library(samsort)).
 
 swack:-
     play.

@@ -6,6 +6,8 @@ play:-
     gameLoop(GameState, Player1, Player2, LevelP1, LevelP2, 'n').
 
 
+
+
 /*Makes the move in person mode, corresponding to the black piece*/
 /*movePlayer1(+GameState, -NewBoard, +Player1, +Player2, +LevelP1, +LevelP2, -Skip)*/
 movePlayer1(GameState, NewBoard, Player1, Player2, LevelP1, LevelP2, Skip) :-
@@ -43,7 +45,7 @@ movePlayer2(GameState, Player1, Player2, LevelP1, LevelP2, LastSkip) :-
         )
     ),
 
-    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner)) 
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner,black)) 
     ; 
     (gameLoop(NewBoard, Player1, Player2, LevelP1, LevelP2, Skip))).
 
@@ -89,7 +91,7 @@ moveComp2(GameState, Player1, Player2, LevelP1, LevelP2, LastSkip) :-
         )
     ),
 
-    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner)) 
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner,black)) 
     ; 
     (gameLoop(NewBoard, Player1, Player2, LevelP1, LevelP2, Skip))).
 
@@ -99,7 +101,7 @@ moveComp2(GameState, Player1, Player2, LevelP1, LevelP2, LastSkip) :-
 gameLoop(GameState, black, white, LevelP1, LevelP2, LastSkip) :-
 
     movePlayer1(GameState, NewBoard, black, white, LevelP1, LevelP2, Skip),
-    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner)) 
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner,white)) 
     ; 
     (movePlayer2(NewBoard, black, white, LevelP1, LevelP2, Skip))).
     
@@ -270,12 +272,12 @@ checksProposedMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow) :-
 
 /*In case of game over, identifies the winner*/
 /*game_over(+GameState, -Winner)*/
-game_over(GameState, Winner) :-
+game_over(GameState, Winner,LastPlayed) :-
 
     value(GameState,black,BlackScore),
     value(GameState,white,WhiteScore),
     
-    getWinner(WhiteScore, BlackScore, Winner),
+    getWinner(WhiteScore, BlackScore, Winner,LastPlayed),
 
     printWinner(Winner).
 
@@ -284,7 +286,7 @@ game_over(GameState, Winner) :-
 /*value(+GameState, +Player, -Value)*/
 value(GameState, Player, Value) :-
     NewBoard = GameState,
-    valueCicle(NewBoard,Player,Value, 0).
+    valueCicle(NewBoard,Player,Value, []).
 
 
 /*Enters in a cycle to find the biggest value*/
@@ -295,15 +297,17 @@ valueCicle(Board, Player, Value, OldValue):-
     
     getValue(UpdatedBoard,Board,Player,NewValue,0,Col,Row),
 
-    getBiggestValue(NewValue,OldValue,BiggestValue),
+    append(OldValue, [NewValue], BiggestValue),
+    
+    
+    /*getBiggestValue(NewValue,OldValue,BiggestValue),*/
 
     valueCicle(UpdatedBoard,Player,Value,BiggestValue).
 
 
 /*In case there are no more cells to visit, the cycle ends*/
 /*valueCicle(+Board, +Player, -Value, +OldValue)*/
-valueCicle(Board, Player, Value, OldValue):-
-    Value is OldValue.
+valueCicle(Board, Player, OldValue, OldValue).
 
 
 /*Gets the length of the group by giving a starting cell for that group*/
