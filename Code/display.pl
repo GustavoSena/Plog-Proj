@@ -138,6 +138,7 @@ printMainMenu(Nothing):-
 
 
 printWinner(Winner):-
+    subsPlayer(Winner,Text),
     write(' _______________________________________________________\n'),
     write('|                                                       |\n'),
     write('|                                                       |\n'),
@@ -148,7 +149,7 @@ printWinner(Winner):-
     write('|       |__/ |__//_//_/ /_//_/ /_//___/ /__/            |\n'),
     write('|                                                       |\n'),
     write('|                                                       |\n'),
-    write('               '),write(Winner),write('\n'),                        
+    write('|                       '),write(Text),write('                           |\n'),                        
     write('|                                                       |\n'),
     write('|                                                       |\n'),
     write('|                                                       |\n'),
