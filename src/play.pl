@@ -54,7 +54,7 @@ movePlayer2(GameState, Player1, Player2, LevelP1, LevelP2, LastSkip) :-
         )
     ),
 
-    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner,black)) 
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner, Player1)) 
     ; 
     (gameLoop(NewBoard, Player1, Player2, LevelP1, LevelP2, Skip))).
 
@@ -100,7 +100,7 @@ moveComp2(GameState, Player1, Player2, LevelP1, LevelP2, LastSkip) :-
         )
     ),
 
-    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner,black)) 
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner, Player1)) 
     ; 
     (gameLoop(NewBoard, Player1, Player2, LevelP1, LevelP2, Skip))).
 
@@ -110,7 +110,7 @@ moveComp2(GameState, Player1, Player2, LevelP1, LevelP2, LastSkip) :-
 gameLoop(GameState, black, white, LevelP1, LevelP2, LastSkip) :-
 
     movePlayer1(GameState, NewBoard, black, white, LevelP1, LevelP2, Skip),
-    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner,white)) 
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner, white)) 
     ; 
     (movePlayer2(NewBoard, black, white, LevelP1, LevelP2, Skip))).
     
@@ -120,7 +120,7 @@ gameLoop(GameState, black, white, LevelP1, LevelP2, LastSkip) :-
 gameLoop(GameState, black, comp2, LevelP1, LevelP2, LastSkip) :-
 
     movePlayer1(GameState, NewBoard, black, comp2, LevelP1, LevelP2, Skip),
-    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner)) 
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner, white)) 
     ; 
     (moveComp2(NewBoard, black, comp2, LevelP1, LevelP2, Skip))).
 
@@ -131,7 +131,7 @@ gameLoop(GameState, comp1, white, LevelP1, LevelP2, LastSkip) :-
 
     moveComp1(GameState, NewBoard, comp1, white, LevelP1, LevelP2, Skip),
     write(Skip), write('\n'),
-    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner)) 
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner, white)) 
     ; 
     (movePlayer2(NewBoard, comp1, white, LevelP1, LevelP2, Skip))).
 
@@ -141,7 +141,7 @@ gameLoop(GameState, comp1, white, LevelP1, LevelP2, LastSkip) :-
 gameLoop(GameState, comp1, comp2, LevelP1, LevelP2, LastSkip) :-
     sleep(1),
     moveComp1(GameState, NewBoard, comp1, comp2, LevelP1, LevelP2, Skip),
-    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner)) 
+    ((Skip == 'y', LastSkip == 'y', game_over(NewBoard, Winner, white)) 
     ; 
     (sleep(1), moveComp2(NewBoard, comp1, comp2, LevelP1, LevelP2, Skip))).
     
