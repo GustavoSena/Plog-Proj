@@ -151,20 +151,26 @@ No início da execução do programa, é dada uma interface ao utilizador para e
 
     - No caso de ter selecionado a opção 1, o jogo começa de imediato.
     <br><br>
-    ![playing](./imagens/playing.png)
+
+        ![playing](./imagens/playing.png)
+
+    <br>
 
     - No caso de ter selecionado a opção 2, o utilizador terá de escolher quais as suas peças (de modo a defenir quem começa a jogar) e qual o nível de dificuldade do computador.
     <br><br>
-    ![choose_color](./imagens/choose_color.png)
+    
+        ![choose_color](./imagens/choose_color.png)
+        ![choose_dif_comp1](./imagens/choose_dif_comp1.png)
+
     <br>
-    ![choose_dif_comp1](./imagens/choose_dif_comp1.png)
 
     - No caso de ter selecionado a opção 3, o utilizador terá de escolher a dificuldade para o primeiro computador (que irá ter as peças pretas), e para o segundo computador (que irá ter as peças brancas).
     <br><br>
-    ![choose_dif_comp1](./imagens/choose_dif_comp1.png)
-    <br>
-    ![choose_dif_comp2](./imagens/choose_dif_comp2.png)
 
+        ![choose_dif_comp1](./imagens/choose_dif_comp1.png)
+        ![choose_dif_comp2](./imagens/choose_dif_comp2.png)
+
+    <br>
 <br>
 
 #### *****Tratamento de inputs*****       
