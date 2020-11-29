@@ -122,15 +122,18 @@ As seguintes figuras mostram o tabuleiro em três estados do jogo:
 
 - Inicial Board:
 <br>
-![InicialBoard](./imagens/initial_board.png)
+
+   ![InicialBoard](./imagens/initial_board.png)
 
 - Middle Board:
 <br>
-![MiddleBoard](./imagens/middle_board.png)
+
+  ![MiddleBoard](./imagens/middle_board.png)
 
 - Final Board:
 <br>
-![FinalBoard](./imagens/final_board.png)
+
+  ![FinalBoard](./imagens/final_board.png)
 
 <br>
 
