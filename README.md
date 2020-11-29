@@ -12,7 +12,7 @@
 Para executar o  jogo:
 
 - Instale e execute o SICStus Prolog.
-- Selecione File > Consult e selecione o file [* swack.pl *] (Code / swack.pl).
+- Selecione File > Consult e selecione o file `swack.pl`.
 - Digite `swack` na consola SICStus para iniciar o jogo.
 
 ----
