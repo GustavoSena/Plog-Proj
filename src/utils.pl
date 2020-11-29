@@ -134,14 +134,14 @@ getBiggestList([B1|List1], [], white, LastPlayed).
 /*getBiggestList(+WhiteOrdered, +BlackOrdered, -Biggest, +LastPlayed)*/
 getBiggestList([B1|List1], [B2|List2], Biggest, LastPlayed) :-
    B1 < B2, !,
-   Biggest = white.
+   Biggest = black.
 
 
 /*In the case Black pieces win*/
 /*getBiggestList(+WhiteOrdered, +BlackOrdered, -Biggest, +LastPlayed)*/
 getBiggestList([B1|List1], [B2|List2], Biggest, LastPlayed) :-
    B1 > B2, !,
-   Biggest = black.
+   Biggest = white.
 
 
 /*Given a position, starts looking for the next cell that belongs to the color of the player*/
