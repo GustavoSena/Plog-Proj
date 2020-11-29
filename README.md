@@ -7,7 +7,10 @@
 | Gustavo Sena     | 201806078 | up201806078@fe.up.pt|
 | Maria Baia       | 201704951 | up201704951@fe.up.pt|
 
+<br>
+
 ## Execução
+<br>
 
 Para executar o  jogo:
 
@@ -15,7 +18,7 @@ Para executar o  jogo:
 - Selecione File > Consult e selecione o file `swack.pl`.
 - Digite `swack` na consola SICStus para iniciar o jogo.
 
-----
+--------
 ## ****Swack****
 <br>
 
@@ -26,8 +29,6 @@ No âmbito da unidade curricular de PLOG, foi-nos proposto a implementação de 
 
 Foi feita uma interface, para interação do utilizador com o jogo, através da linha de comando.
 
-<br>
-
 ### ****Game Description****
 <br>
 
@@ -35,16 +36,12 @@ Consiste num jogo para duas pessoas e dois conjuntos de peças diferentes (preta
     
 O jogo inicia-se sobre um tabuleiro de formato quadrangular, com tamanho variável, coberto num padrão xadrez por peças pretas e brancas. No caso de o tabuleiro ser de dimensão ímpar nas laterais, o padrão deverá ter uma peça branca no centro do tabuleiro.
 
-<br>
-
 ### ****Rules****
 <br>
 
 A primeira jogada é feita pelo jogador que contêm as peças pretas, alterando com o jogador que contêm as peças brancas, tendo cada um na sua respetiva jogada a possibilidade de jogar ou passar a jogada ao próximo. No caso de jogo, o jogador poderá mover a parte superior de uma pilha da sua cor (pilha com a peça superior da cor do jogador), para uma pilha inimiga adjacente lateral (pilha com a peça superior da cor do jogador oposto), desde que ambas as pilhas tenham o mesmo tamanho (mesmo número de peças) antes da jogada ser feita.
 
-O jogo termina quando ambos os jogadores passarem a jogada sucessivamente. O vencedor será o jogador com a pontuação mais alta. Essa pontuação é o tamanho do seu maior grupo, isto é, o maior número de pilhas adjacentes, da mesma cor, possíveis de alcançar. Em caso de empate, cada jogador acrescenta à sua pontuação o tamanho do seu segundo maior grupo, que poderá ser igual ao do grupo anterior. Se o empate persistir, o terceiro maior grupo também é contado e assim sucessivamente. Se o empate mantiver-se até não haver mais grupos a acrescentar, para os tabuleiros de tamanho par, o vencedor será o joador que fez o último movimento.
-
-<br>
+O jogo termina quando ambos os jogadores passarem a jogada sucessivamente. O vencedor será o jogador com a pontuação mais alta. Essa pontuação é o tamanho do seu maior grupo, isto é, o maior número de pilhas adjacentes, da mesma cor, possíveis de alcançar. Em caso de empate, cada jogador acrescenta à sua pontuação o tamanho do seu segundo maior grupo, que poderá ser igual ao do grupo anterior. Se o empate persistir, o terceiro maior grupo também é contado e assim sucessivamente. Se o empate mantiver-se até não haver mais grupos a acrescentar, para os tabuleiros de tamanho par, o vencedor será o jogador que fez o último movimento.
 
 ### ****Lógica do Jogo****
 <br>
@@ -135,8 +132,6 @@ As seguintes figuras mostram o tabuleiro em três estados do jogo:
 
   ![FinalBoard](./imagens/final_board.png)
 
-<br>
-
 #### *****Interface*****
 <br> 
 
@@ -174,8 +169,6 @@ No início da execução do programa, é dada uma interface ao utilizador para e
         ![choose_dif_comp2](./imagens/choose_dif_comp2.png)
 
     <br>
-<br>
-
 #### *****Tratamento de inputs*****       
 <br>
 
@@ -207,7 +200,6 @@ Tanto para a decisão do tamanho do tabuleiro (`decideSizeBoard(-Size)`), como n
 
 *Invalid Difficulty Option*
 
-
 #### ****Execução de Jogadas****
 <br>
 
@@ -228,31 +220,27 @@ Porém, para ser executada a jogada é preciso saber as coordenadas da posição
 <br><br>
 ![check_new_position](./imagens/check_new_position.png)
 
-<br>
-
 #### ****Lista de Jogadas Válidas****
 <br>
 
-De modo a obter uma lista de jogadas válida, é utilizado o predicado `valid_moves(+Board, +Player, -ListOfMoves)`, ao qual recebe o estado do tabuleiro e o jogador atuais. Este recorre ao predicado `setof` para encontrar todas as jogadas possíveis, atribuindo-lhes o valor que o jogador adquiria com essa jogada, satisfazendo o predicato `generateMove(+Player, +Board,-CurrColumn-CurrRow-NewColumn-NewRow)`,  `move(Board, CurrColumn, CurrRow, NewBoard, NewColumn, NewRow, Player)` e `once(getValue(UpdatedBoard, NewBoard, Player, Value, 0, NewColumn, NewRow))`
+De modo a obter uma lista de jogadas válida, é utilizado o predicado `valid_moves(+Board, +Player, -ListOfMoves)`, ao qual recebe o estado do tabuleiro e o jogador atuais. Este recorre ao predicado `setof` para encontrar todas as jogadas possíveis, atribuindo-lhes o valor que o jogador adquiria com essa jogada, satisfazendo o predicato `generateMove(+Player, +Board,-CurrColumn-CurrRow-NewColumn-NewRow)`,  `move(Board, CurrColumn, CurrRow, NewBoard, NewColumn, NewRow, Player)` e `once(getValue(UpdatedBoard, NewBoard, Player, Value, 0, NewColumn, NewRow))`.
 
 O predicado `generateMove(+Player, +Board,-CurrColumn-CurrRow-NewColumn-NewRow)` gera posições em que a peça de cima da pilha de cada coordenada gerada pertença ao jodador atual (`checkGeneratePosition(+Player, +Board, -CurrColumn-CurrRow)`) e gera novas posições adjacentes (`checkGenerateMove(+Player, +Board, -CurrColumn-CurrRow-NewColumn-NewRow)`) em que a nova posição gerada pertenca ao jogador oposto e que as duas pilhas da posição gerada e da nova posição gerada tenham o mesmo comprimento (`checksProposedMove(+Player, +Board, -CurrColumn-CurrRow-NewColumn-NewRow)`).
 
-O predicado `move(Board, CurrColumn, CurrRow, NewBoard, NewColumn, NewRow, Player)`, neste caso específico, seria apenas usado para simular um novo tabuleiro de jogo com a jogada gerada, de modo a obter o valor adquirido ao jogador, através do predicado `once(getValue(UpdatedBoard, NewBoard, Player, Value, 0, NewColumn, NewRow))`
+O predicado `move(Board, CurrColumn, CurrRow, NewBoard, NewColumn, NewRow, Player)`, neste caso específico, seria apenas usado para simular um novo tabuleiro de jogo com a jogada gerada, de modo a obter o valor adquirido ao jogador, através do predicado `once(getValue(UpdatedBoard, NewBoard, Player, Value, 0, NewColumn, NewRow))`.
 
-Por fim, utiliza-se o predicado `reverso` para obter a jogada que aquire o maior valor ao jogador na primeira posição.
-
-<br>
+Por fim, utiliza-se o predicado `reverse` para obter a jogada que aquire o maior valor ao jogador na primeira posição.
 
 #### ****Jogada do Computador****
 <br>
 
 A jogada do computador é feita através do predicado `choose_move(+GameState, +Player, +Lever, -Move, -Skip)`, que dependendo do nível escolhido pelo utilizador, vão ocorrer duas escolhas distintas do predicado.
+
 - No caso de o nível ser 'rand', dada uma lista de jogadas válidas obtidas pelo predicado `valid_moves`, obtem-se um valor aleatório através do predicado `random`, que será utilizado no predicado `nth0`, para obter as coordenadas da jogada do computador, localizadas na posição aleatória da lista.
--No caso de o nível ser 'greedy', será utilizado o predicado `nth0`, para obter as coordenadas da jogada do computador, localizadas na posição primeira posição da lista dada pelo predicado `valid_moves`.
+
+- No caso de o nível ser 'greedy', será utilizado o predicado `nth0`, para obter as coordenadas da jogada do computador, localizadas na posição primeira posição da lista dada pelo predicado `valid_moves`.
 
 No entanto, nos dois casos, se a lista obtida pelo predicado `valid_moves` estiver fazia, será considerado que computador passou a vez.
-
-<br>
 
 #### ****Avaliação do Tabuleiro****
 <br>
@@ -263,8 +251,6 @@ O predicado `valueCicle(+Board, +Player, -Value, +OldValue)` recorre ao auxilio 
 - `searchForColor(+Board, +Color, +CurrCol, +CurrRow, -Col, -Row)`: A partir de uma dada posição, encontra a próxima coordenada ao qual a peça superior da sua pilha pertença a cor recebida.
 - `getValue(-UpdatedBoard3, +Board, +Player, -ReturnValue3, +Value, +CurrColumn, +CurrRow)`: Obtém o comprimento do grupo, fornecendo uma posição pertencente a esse grupo.
 - `append`: Junta numa lista os valores já encontrados com o novo valor encontrado, para que o predicado `valueCicle` possa ser novamente chamado com uma lista de novos valores.
-
-<br>
 
 #### ****Final do Jogo****
 <br>
@@ -278,8 +264,6 @@ Sendo assim, é chamado o predidaco `game_over(+GameState, -Winner, +LastPlayed)
 O predicado `getWinner(+WhiteScore, +BlackScore, -Winner, +LastPlayed)` recebe a lista de valores de cada jogador e ordena-as por ordem decrescente. Com auxilio do predicado `getBiggestList(+WhiteOrdered, +BlackOrdered, -Biggest, +LastPlayed)` verifica, a partir do primeiro elemento de cada lista de valores relativos a cada jogador, qual o vencedor. No caso de empate, verifica o próximo valor em cada lista. Se o empate persistir  até não haver mais elementos nas lista, o vencedor será o jogador que fez o último movimento.
 
 Por fim é dado display para consola do jogador vencedor (`printWinner(+Winner)`).
-
-<br>
 
 ### ****Conclusão****
 <br>
