@@ -1,11 +1,17 @@
-generateBoard(Board,Size):-
+/*Generates a Board given a size*/
+/*generateBoard(-Board,+Size)*/
+generateBoard(Board,Size) :-
     RowN is Size,
     generateBoard([],Board,RowN,Size).
 
 
+/*When all the rows on the board have already been created*/
+/*generateBoard(+FinalBoard,-FinalBoard,+RowN,+Size).*/
 generateBoard(FinalBoard,FinalBoard,0,Size).
 
 
+/*Generates the board rows*/
+/*generateBoard(+InitBoard,-FinalBoard,+RowN,+Size)*/
 generateBoard(InitBoard,FinalBoard,RowN,Size):-
     generateRow([],Row,RowN,Size),
     append(InitBoard,[Row],NewBoard),
@@ -13,29 +19,51 @@ generateBoard(InitBoard,FinalBoard,RowN,Size):-
     generateBoard(NewBoard,FinalBoard,NewRowN,Size).
 
 
+/*When all the lines on the board have already been created*/
+/*generateRow(+FinalRow,-FinalRow,+RowN,+Size)*/
 generateRow(InitRow,FinalRow,0,Size).
 
 
+/*When all the columns in the row have already been created*/
+/*generateRow(+FinalRow,-FinalRow,+RowN,+Size)*/
 generateRow(FinalRow,FinalRow,Rown,0).
 
 
+/*Generates a row in the RowN position with Size columns*/
+/*generateRow(+InitRow,-FinalRow,+RowN,+Size)*/
 generateRow(InitRow,FinalRow,RowN,Size):-
     generateCell(Cell,RowN, Size),
     append(InitRow,Cell,UpdatedRow),
     NewSize is Size-1,
     generateRow(UpdatedRow,FinalRow,RowN,NewSize).
 
-   
+
+/*Checks if the given position belongs to the black cell and generates there a black cell*/
+/*generateCell(+Cell,-RowN,-ColN)*/ 
 generateCell(Cell,RowN,ColN) :-
     (((RowN mod 2) =:= 0, (ColN mod 2) =\= 0) ; ((RowN mod 2) =\= 0, (ColN mod 2) =:= 0)), !,
     Cell = [[black]].
     
 
+/*Checks if the given position belongs to the white cell and generates there a white cell*/
+/*generateCell(+Cell,-RowN,-ColN)*/ 
 generateCell(Cell,RowN,ColN) :-
     Cell = [[white]].
 
 
-displayGame(GameState,Player):-
+/*Displays the given GameState*/
+/*displayExampleBoard(+GameState)*/
+displayExampleBoard(GameState):-
+    Board = GameState,
+    length(Board,Size),
+    printHead(Size),
+    printBar(Size+1),
+    printBoard(Size,0,Board).
+
+
+/*Displays the given GameState and the current Player*/
+/*displayGame(+GameState, +Player)*/
+displayGame(GameState, Player):-
     Board = GameState,
     length(Board,Size),
     printHead(Size),
@@ -47,6 +75,8 @@ displayGame(GameState,Player):-
     write('\n').
 
 
+/*Prints the Board */
+/*printBoard(+Size, +CurrentLine, +ListOfRows)*/
 printBoard(Size,N,[X|L]):-
     M is N+1,
     write(' '),
@@ -58,18 +88,25 @@ printBoard(Size,N,[X|L]):-
     printBoard(Size,M,L).  
 
 
+/*When it reaches the end of the list of rows*/
+/*printBoard(+Size, +M, +[])*/
 printBoard(Size,M,[]).
 
 
+/*Prints the Rows */
+/*printLine(+ListOfColumns)*/
 printLine([X|L]) :-
     printCell(X),
     write('|'),
     printLine(L).
 
-
+/*When it reaches the end of the list of columns*/
+/*printLine(+[])*/
 printLine([]).
 
 
+/*Prints each cell, which represents a stack of pieces*/
+/*printCell(+Cell)*/
 printCell(Cell):-
     last(Cell,Color),
     symbol(Color,S),
@@ -79,36 +116,47 @@ printCell(Cell):-
     write(Size).
 
 
+/*When it reaches the end of the row*/
+/*printBar(+Size)*/
 printBar(0):-
     write('\n').
 
 
+/*Prints a part of the separation between each line*/
+/*printBar(+Size)*/
 printBar(Size):-
     write('---|'),
     NewSize is Size-1,
     printBar(NewSize).
 
 
+/*Prints the beginning part of the board header*/
+/*printHead(+Size)*/
 printHead(Size):-
     write('   |'),
-    printHead(Size,0).
+    printHead(Size, 0).
 
 
-printHead(Size,Size):-
+/*When it reaches the end of the row*/
+/*printHead(+Size, +Size)*/
+printHead(Size, Size):-
     write('\n').
 
 
-printHead(Size,Index):-
+/*Prints a part of the board header*/
+/*printHead(+Size, +Index)*/
+printHead(Size, Index):-
     write(' '),
     NewIndex is Index+1,
-    subsHead(NewIndex,S),
+    subsHead(NewIndex, S),
     write(S),
     write(' |'),
     printHead(Size, NewIndex).
 
 
-
-printMainMenu(Nothing):-
+/*Prints the Main Menu*/
+/*printMainMenu*/
+printMainMenu :-
     write(' _______________________________________________________\n'),
     write('|                                                       |\n'),
     write('|                                                       |\n'),
@@ -129,15 +177,15 @@ printMainMenu(Nothing):-
     write('|               3 - Comp1. vs Comp2.                    |\n'),
     write('|                                                       |\n'),
     write('|                                                       |\n'),
-    write('|               4 - Exit                                |\n'),
     write('|                                                       |\n'),
     write('|                                                       |\n'),
     write('|                                                       |\n'),
     write('|_______________________________________________________|\n').
 
 
-
-printWinner(Winner):-
+/*Prints the winner of the game, given a winner*/
+/*printWinner(+Winner)*/
+printWinner(Winner) :-
     subsPlayer(Winner,Text),
     write(' _______________________________________________________\n'),
     write('|                                                       |\n'),
@@ -157,8 +205,9 @@ printWinner(Winner):-
     write('|_______________________________________________________|\n').
 
 
-
-printColor(Nothing):-
+/*Prints the possible colors that the user can choose*/
+/*printColor*/
+printColor :-
     write(' _______________________________________________________\n'),
     write('|                                                       |\n'),
     write('|                                                       |\n'),
@@ -181,8 +230,9 @@ printColor(Nothing):-
     write('|_______________________________________________________|\n').
 
 
-
-printDifficulty(Nothing):-
+/*Prints the possible difficulties that the user can choose*/
+/*printDifficulty*/
+printDifficulty :-
     write(' _______________________________________________________\n'),
     write('|                                                       |\n'),
     write('|                                                       |\n'),

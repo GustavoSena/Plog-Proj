@@ -64,12 +64,8 @@ subsPlayer(white,S):-S='White'.
 subsPlayer(black,S):-S='Black'.
 
 
-
-
-
 subsDif(1,rand).
 subsDif(2,greedy).
-
 
 
 nextPlayer([white], black).
@@ -80,27 +76,15 @@ currPlayer([white], white).
 currPlayer([black], black).
 
 
-deleteFirst([X|L],R):-
-    R is L.
-
-
-/**/
-/*replace_nth0(+List, Index, OldElem, NewElem, -NewList)*/
+/*Replaces in the Index position of List with the value NewElem*/
+/*replace_nth0(+List, +Index, +OldElem, +NewElem, -NewList)*/
 replace_nth0(List, Index, OldElem, NewElem, NewList) :-
    nth0(Index,List,OldElem,Transfer),
    nth0(Index,NewList,NewElem,Transfer).
 
 
-/*Gets the color of the given cell*/
-/*getCellColor(+Board, +Col, +Row, -Color)*/
-getCellColor(Board,Col,Row,Color) :-
-   nth0(Row,Board,RowList),
-   nth0(Col,RowList,ColorList),
-   last(ColorList,Color).
-
-
-/**/
-/*replaceValue(+OldBoard, -NewBoard, +Column, +Row, -Color)*/
+/*Replaces in the given position of OldBoard with the piece of color Color*/
+/*replaceValue(+OldBoard, -NewBoard, +Column, +Row, +Color)*/
 replaceValue(OldBoard, NewBoard, Column, Row, Color) :-
     nth0(Row,OldBoard,RowList),
     nth0(Column,RowList,ColList),
@@ -114,36 +98,9 @@ replaceValue(OldBoard, NewBoard, Column, Row, Color) :-
     replace_nth0(OldBoard,Row,RowList,NewRow,NewBoard).
 
 
-/*Gets the biggest value*/
-/*getBiggestValue(+Value1, +Value2, -Biggest)*/
-getBiggestValue(Value1, Value2, Biggest) :-
-   Value1<Value2,!,
-   Biggest is Value2.
-
-
-/*Gets the biggest value*/
-/*getBiggestValue(+Value1, +Value2, -Biggest)*/
-getBiggestValue(Value1, Value2, Biggest) :-
-   Biggest is Value1.
-
-
-/*Gets the winner. In this case, the Black piece player is the winner*/
-/*getWinner(+WhiteScore, +BlackScore, -Winner)*/
-/*getWinner(WhiteScore, BlackScore, Winner) :-
-   WhiteScore < BlackScore, !,
-   Winner = black.*/
-
-
-/*Gets the winner. In this case, the White piece player is the winner*/
-/*getWinner(+WhiteScore, +BlackScore, -Winner)*/
-/*getWinner(WhiteScore, BlackScore, Winner) :-
-   Winner = white.*/
-
-
-
-/*Gets the winner. In this case, the Black piece player is the winner*/
-/*getWinner(+WhiteScore, +BlackScore, -Winner)*/
-getWinner(WhiteScore, BlackScore, Winner,LastPlayed) :-
+/*Gets the winner of the game*/
+/*getWinner(+WhiteScore, +BlackScore, -Winner, +LastPlayed)*/
+getWinner(WhiteScore, BlackScore, Winner, LastPlayed) :-
    
    samsort(@>=, WhiteScore,WhiteOrdered),
    samsort(@>=, BlackScore,BlackOrdered),
@@ -151,31 +108,86 @@ getWinner(WhiteScore, BlackScore, Winner,LastPlayed) :-
    getBiggestList(WhiteOrdered,BlackOrdered,Winner,LastPlayed).
 
 
-getBiggestList([B1|List1],[B2|List2],Biggest,LastPlayed):-
-   B1==B2, !,
-   getBiggestList(List1,List2,Biggest,LastPlayed).
-
-getBiggestList([],[],Biggest,LastPlayed):-
-   Biggest=LastPlayed. 
-
-getBiggestList([],[B2|List2],Biggest,LastPlayed):-
-   Biggest=black.
-
-getBiggestList([B1|List1],[],Biggest,LastPlayed):-
-   Biggest=white.
+/*In the case of a tie, check next values*/
+/*getBiggestList(+WhiteOrdered, +BlackOrdered, -Biggest, +LastPlayed)*/
+getBiggestList([B1|List1], [B2|List2], Biggest, LastPlayed) :-
+   B1 == B2, !,
+   getBiggestList(List1, List2, Biggest, LastPlayed).
 
 
-getBiggestList([B1|List1],[B2|List2],Biggest,LastPlayed):-
-   B1<B2, !,
-   Biggest=white.
-
-getBiggestList([B1|List1],[B2|List2],Biggest,LastPlayed):-
-   B1>B2, !,
-   Biggest=black.
-   
+/*In the case of a tie, wins the whoever made the last move.*/
+/*getBiggestList(+[], +[], -LastPlayed, +LastPlayed)*/
+getBiggestList([], [], LastPlayed, LastPlayed). 
 
 
+/*In the case Black pieces win*/
+/*getBiggestList(+[], +BlackOrdered, -Biggest, +LastPlayed)*/
+getBiggestList([], [B2|List2], black, LastPlayed).
 
-   
+
+/*In the White pieces win*/
+/*getBiggestList(+WhiteOrdered, +[], -Biggest, +LastPlayed)*/
+getBiggestList([B1|List1], [], white, LastPlayed).
 
 
+/*In the case White pieces win*/
+/*getBiggestList(+WhiteOrdered, +BlackOrdered, -Biggest, +LastPlayed)*/
+getBiggestList([B1|List1], [B2|List2], Biggest, LastPlayed) :-
+   B1 < B2, !,
+   Biggest = white.
+
+
+/*In the case Black pieces win*/
+/*getBiggestList(+WhiteOrdered, +BlackOrdered, -Biggest, +LastPlayed)*/
+getBiggestList([B1|List1], [B2|List2], Biggest, LastPlayed) :-
+   B1 > B2, !,
+   Biggest = black.
+
+
+/*Given a position, starts looking for the next cell that belongs to the color of the player*/
+/*searchForColor(+Board, +Color, +CurrCol, +CurrRow, -Col, -Row)*/
+searchForColor(Board, Color, CurrCol, CurrRow, Col, Row) :-
+    nth0(CurrRow, Board, RowList),
+    searchForColorInRow(RowList, Color, CurrCol, CurrRow, Col, Row).
+
+
+/*In case the cell has not in the current row, switch to the next row*/
+/*searchForColor(+Board, +Color, +CurrCol, +CurrRow, -Col, -Row)*/
+searchForColor(Board, Color, CurrCol, CurrRow, Col, Row) :-
+    length(Board, Size),
+    NewRow is CurrRow + 1,
+    NewRow < Size, !,
+    searchForColor(Board, Color, CurrCol, NewRow, Col, Row).
+
+
+/*Given a position, starts looking for the cell in the current row*/
+/*searchForColorInRow(+RowList, +Color, +CurrCol, +CurrRow, -Col, -Row)*/
+searchForColorInRow(RowList, Color, CurrCol, CurrRow, Col, Row) :-
+    nth0(CurrCol, RowList, Column),
+    searchForColorInCol(RowList, Color, Column, CurrCol, CurrRow, Col, Row).
+
+
+/*In case a cell is found*/
+/*searchForColorInCol(+RowList, +Color, +Column, +CurrCol, +CurrRow, -Col, -Row)*/
+searchForColorInCol(RowList, Color, Column, CurrCol, CurrRow, Col, Row) :-
+    last(Column, CheckColor),
+    Color == CheckColor,
+    Col is CurrCol,
+    Row is CurrRow.
+
+
+/*In case the cell has not in the current column, switch to the next column*/
+/*searchForColorInCol(+RowList, +Color, +Column, +CurrCol, +CurrRow, -Col, -Row)*/
+searchForColorInCol(RowList, Color, Column, CurrCol, CurrRow, Col, Row):-
+    length(RowList, Size),
+    NewCol is CurrCol + 1,
+    NewCol < Size, !,
+    searchForColorInRow(RowList, Color, NewCol, CurrRow, Col, Row).
+
+
+/*Gets the color of the given cell*/
+/*getCellColor(+Board, +Col, +Row, -Color)*/
+getCellColor(Board,Col,Row,Color) :-
+   nth0(Row,Board,RowList),
+   nth0(Col,RowList,ColorList),
+   last(ColorList,Color).
