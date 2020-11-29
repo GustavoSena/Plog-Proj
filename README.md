@@ -203,6 +203,8 @@ Tanto para a decisão do tamanho do tabuleiro (`decideSizeBoard(-Size)`), como n
 #### ****Execução de Jogadas****
 <br>
 
+Após serem definidos os parâmetros para o iniciar o jogo, executa-se o predicado `gameLoop(+GameState, +Player1, +Player2, +LevelP1, +LevelP2, +LastSkip)` que entra num ciclo que em cada interação executa o movimento dos dois jogadores.
+
 A execução de uma jogada é feita através do predicado `move(+GameState, +Move, -NewGameState)`. Este recebe o estado atual do tabuleiro e as coordenadas da posição atual da peça a mover e da nova posição. Recorrendo a 2 predicados auxiliares, o predicado `insertStack(+OldBoard, -NewBoard, +Column, +Row, +Color)` insere a peça a mover na pilha da nova posição, e o predicado `removeStack(+OldBoard, -NewBoard, +Column, +Row, -Color)` remove da pilha da posição atual a peça do jogador, e substitui-a pela peça do jogador oposto. Por fim, as alteração feitas por estes 2 predicados são guardadas numa nova variável NewGameState.
 
 
