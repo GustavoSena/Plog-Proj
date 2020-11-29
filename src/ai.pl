@@ -33,7 +33,6 @@ valid_moves(Board, Player, ListOfMoves) :-
     setof(Value-CurrColumn-CurrRow-NewColumn-NewRow, NewBoard^UpdatedBoard^(generateMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow), move(Board, CurrColumn, CurrRow, NewBoard, NewColumn, NewRow, Player), once(getValue(UpdatedBoard, NewBoard, Player, Value, 0, NewColumn, NewRow))), List),
     reverse(List, ListOfMoves).
 
-
 /*Generates possible moves*/   
 /*generateMove(+Player, +Board, -CurrColumn-CurrRow-NewColumn-NewRow)*/
 generateMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow) :-
@@ -53,31 +52,39 @@ checkGeneratePosition(Player, Board, CurrColumn-CurrRow) :-
 /*Checks the possible generated position*/ 
 /*checkGenerateMove(+Player, +Board, -CurrColumn-CurrRow-NewColumn-NewRow)*/
 checkGenerateMove(Player, Board, CurrColumn-CurrRow-NewColumn-NewRow) :-
+
     /*up movement*/
-    NewRow is CurrRow - 1,
-    NewRow >= 0,
-    checksProposedMove(Player, Board, CurrColumn-CurrRow-CurrColumn-NewRow),
-    NewColumn is CurrColumn
+    (   NewRow is CurrRow - 1,
+        NewRow >= 0,
+        checksProposedMove(Player, Board, CurrColumn-CurrRow-CurrColumn-NewRow),
+        NewColumn is CurrColumn
+    )
     ;
     /*down movement*/
-    NewRow is CurrRow + 1,
-    length(Board, Size),
-    NewRow =< Size,
-    checksProposedMove(Player, Board, CurrColumn-CurrRow-CurrColumn-NewRow),
-    NewColumn is CurrColumn
+    (
+        NewRow is CurrRow + 1,
+        length(Board, Size),
+        NewRow =< Size,
+        checksProposedMove(Player, Board, CurrColumn-CurrRow-CurrColumn-NewRow),
+        NewColumn is CurrColumn
+    )
     ;
     /*left movement*/
-    NewColumn is CurrColumn - 1,
-    NewColumn >= 0,
-    checksProposedMove(Player, Board, CurrColumn-CurrRow-NewColumn-CurrRow),
-    NewRow is CurrRow
+    (
+        NewColumn is CurrColumn - 1,
+        NewColumn >= 0,
+        checksProposedMove(Player, Board, CurrColumn-CurrRow-NewColumn-CurrRow),
+        NewRow is CurrRow
+    )
     ;
     /*right movement*/
-    NewColumn is CurrColumn + 1,
-    length(Board, Size),
-    NewColumn =< Size,
-    checksProposedMove(Player, Board, CurrColumn-CurrRow-NewColumn-CurrRow),
-    NewRow is CurrRow
+    (
+        NewColumn is CurrColumn + 1,
+        length(Board, Size),
+        NewColumn =< Size,
+        checksProposedMove(Player, Board, CurrColumn-CurrRow-NewColumn-CurrRow),
+        NewRow is CurrRow
+    )
     ;
     fail.
 
