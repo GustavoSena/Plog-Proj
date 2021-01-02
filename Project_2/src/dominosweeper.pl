@@ -1,3 +1,8 @@
+:- use_module(library(random)).
+:- use_module(library(clpfd)).
+:- use_module(library(lists)).
+:- use_module(library(time)).
+
 :- consult('utils.pl').
 :- consult('interface.pl').
 :- consult('solve_puzzle.pl').
@@ -5,13 +10,10 @@
 :- consult('puzzles.pl').
 :- consult('display.pl').
 
-:- use_module(library(clpfd)).
-:- use_module(library(lists)).
-
 dominosweeper :-
 
     mainMenu(PuzzleList, Size),
-    
+
     solvePuzzle(PuzzleList, Size, Solution),
 
     listToMatrix(PuzzleList, Size, Puzzle),
@@ -19,6 +21,8 @@ dominosweeper :-
     displayBoard(Puzzle),
 
     play(Puzzle, Solution, Solution, Size).
+
+
 
 play(Puzzle, Solution, AuxBoard, Size) :-
 
@@ -38,7 +42,8 @@ play(Puzzle, Solution, AuxBoard, Size) :-
 
     
 play(Puzzle, Solution, AuxBoard, Size) :-
-    write('END!\n').
+    write('END!\n'),
+    displayBoard(Solution).
 
 
 

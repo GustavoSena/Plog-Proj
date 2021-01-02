@@ -18,7 +18,7 @@ decideBoard(Puzzle, Size, Option) :-
 /*readOption(-Option)*/
 readOption(Option):-
     printMenu,
-    write('Choose the Board option (1 or 2)\n'),
+    write('Choose the Board option (1 or 5)\n'),
     get_code(Option),
     peek_char(Char),
     Char=='\n', !,
@@ -34,7 +34,7 @@ readOption(Option):-
 /*validateOption(+Op, -Option)*/
 validateOption(Op, Option):-
     subsCode(Op, Option),
-    Option >= 1, Option =< 2, !.
+    Option >= 1, Option =< 5, !.
     
 /*If the player option is not valid*/
 /*validateRow(+Op, -Option)*/
@@ -43,6 +43,42 @@ validateOption(Op, Option) :-
     decideBoard(Puzzle, Size, Option).
 
 
+/*It's made a decision by the player on which board to play*/
+/*decideBoard(-Puzzle, -Size)*/
+decideSize(Size) :-
+    readSize(S),
+    validateSize(S, Size).
+
+
+/*Reads the input from the user to know the size of the board he wants*/
+/*readSize(-Size)*/
+readSize(Size) :-
+    write('Choose the size of the board (3 to 6)\n'),
+    get_code(Size),
+    peek_char(Char),
+    Char=='\n', !,
+    get_char(Char).
+
+
+/*In case the input is not valid*/ 
+/*readSize(-Size)*/
+readSize(Size) :-
+    readSize(Size).
+
+
+/*If the answer from the user is valid*/
+/*validateSize(+Size)*/
+validateSize(S, Size) :-
+    subsCode(S, Size),
+    Size >= 3, Size =< 7, !.
+
+/*If the player option is not valid*/
+/*validateSize(+Op, -Option)*/
+validateSize(S, Size) :-
+    write('Invalid Size!\n'),
+    decideSize(Size).
+
+    
 /*------------------------------------COORDENATES------------------------------------*/
 /*Gets a coordinate to play*/
 /*getCoord(-Column, -Row, +Size)*/

@@ -37,6 +37,18 @@ init([H1|Puzzle], [H2|List]) :-
     H2 = H1,
     init(Puzzle, List).
 
+initG([], []).
+
+initG([H1|Puzzle], [H2|List]) :-
+    var(H1),
+    H2 in (0..10),
+    initG(Puzzle, List).
+
+initG([H1|Puzzle], [H2|List]) :-
+    \+var(H1),
+    H2 = H1,
+    initG(Puzzle, List).
+
 
 /*Converts a list to a matrix*/
 /*list_to_matrix(+List, +Size, -Board)*/
@@ -132,3 +144,28 @@ checkMoves([Row|Puzzle], Counter) :-
 checkMine(Puzzle, Column, Row) :-
     getElement(Puzzle, Row, Column, SelectedElement),
     SelectedElement = 9.
+
+
+/*-------------------------------------STATISTICS--------------------------------------*/
+reset_timer:-
+    statistics(total_runtime, _).
+
+print_time(Msg):-
+    statistics(total_runtime,[_,T]),
+    TS is ((T//10)*10)/1000, nl,
+    write(Msg), write(TS), write('s'), nl, nl.
+
+
+/*----------------------------------------BOARD----------------------------------------*/
+memberN(List, Value, Number) :-
+    include(=(Value), List, NewList), 
+    length(NewList, N),
+    N >= Number.
+
+
+/*Puts the mines at the start of the MergedList before filling with the remaining variables from List.*/
+/*merge(+List, +ListMines, -MergedList)*/
+merge(List, [], List).
+
+merge([_|List], [Mine|ListMines], [Mine|MergedList]) :- 
+    merge(List, ListMines, MergedList).
