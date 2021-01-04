@@ -1,3 +1,5 @@
+
+/*---------------------------------------PUZZLES--------------------------------------*/
 getPuzzle(1, 3, [2, e, e,
                  e, e, e,
                  e, e, 0]).
@@ -27,6 +29,8 @@ getPuzzle(5, Size, Puzzle) :-
      preparePuzzle(P, Puzzle).
 
 /*---------------------------------------GENERATE--------------------------------------*/
+/*Generates a game board*/
+/*generate(+Size, -PuzzleList) */
 generate(Size, PuzzleList) :-
 
     /*Generate a List*/
@@ -53,6 +57,9 @@ generate(Size, PuzzleList) :-
     random(3, X, NGuesses),
     memberN(PuzzleList, 10, NGuesses).
 
+
+/*For each element found, restrictions are applied according on the game rules*/
+/*for_element(+Board, +Size, +Row, +Column)*/
 /*In case it reaches the end of the board*/
 forEach(Board, Size, Row, Column) :-
     Row is Size + 1.
@@ -85,8 +92,7 @@ forEach(Board, Size, Row, Column) :-
 
 
 /*Each cell in the table is changed according to the restrictions implemented*/
-/*restrictions(+Board, +Row, +Column)*/
-/*In case the selected element is a track*/
+/*generateRestrictions(+Board, +Row, +Column)*/
 /*In case the selected element is a decision variable*/
 generateRestrictions(Board, Row, Column) :-
 
@@ -94,26 +100,29 @@ generateRestrictions(Board, Row, Column) :-
 
     var(Element), 
 
-    /*write(Row-Column), nl,*/
-
     surroundedMines(Board, Row, Column, AdjacentVariables),
 
     exacly(Element, AdjacentVariables, 9).
 
+/*In case the selected element is a decision variable between 9 and 10*/
 generateRestrictions(Board, Row, Column) :-
     getElement(Board, Row, Column, Element),
 
     Element #>= 9, Element #=< 10,
 
-    /*write(Row-Column), nl,*/
-
     adjacencyMines(Board, Element, Row, Column).
 
 
+/*Given a board with the solution, prepares a new board to play*/
+/*preparePuzzle(+P1, -Puzzle)*/
 preparePuzzle(P1, Puzzle) :-
      replace(9, P1, P2),
      replace(10, P2, Puzzle).
 
+
+/*Replace cells as needed*/
+/*replace(+Value, +P, -Puzzle)*/
+/*Reaches the end of the list*/
 replace(_, [], []).
 
 replace(Value, [H1|P], [H2|Puzzle]) :-

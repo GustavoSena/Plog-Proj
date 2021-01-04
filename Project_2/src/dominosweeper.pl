@@ -18,12 +18,13 @@ dominosweeper :-
 
     listToMatrix(PuzzleList, Size, Puzzle),
 
-    displayBoard(Puzzle),
+    nl, nl, displayBoard(Puzzle), nl, nl,
 
     play(Puzzle, Solution, Solution, Size).
 
 
-
+/*Checks if there are still possible moves, and if so, ask the user for the move coordinates and check if the move made by the player is possible and if he did not hit a mine.*
+/*play(+Puzzle, +Solution, +AuxBoard, +Size)*/
 play(Puzzle, Solution, AuxBoard, Size) :-
 
     checkMoves(AuxBoard, 0),
@@ -40,16 +41,14 @@ play(Puzzle, Solution, AuxBoard, Size) :-
         gameOver(Solution)
     ).
 
-    
+/*In case there are no more moves*/
 play(Puzzle, Solution, AuxBoard, Size) :-
-    write('END!\n'),
-    displayBoard(Solution).
+    write('END!\n'), nl,
+    displayBoard(Solution), nl.
 
 
-
+/*If the player hits a mine, he loses the game*/
+/*gameOver(+Solution)*/
 gameOver(Solution) :-
-    write('GAME OVER! YOU LOSE\n'),
-    displayBoard(Solution).
-
-
-
+    write('GAME OVER! YOU LOSE\n'), nl,
+    displayBoard(Solution), nl.

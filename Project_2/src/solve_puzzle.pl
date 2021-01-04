@@ -4,24 +4,17 @@ solvePuzzle(Puzzle, Size, Board) :-
 
     listToMatrix(List, Size, Board),
 
-    /*reset_timer,*/
-
-    /*(trace ; true),*/
-
     forElement(Board, Size, 1, 1),
 
-    /*write('-------------------------\n'),
-    print_time('Posting Constraints: '),
-    write('-------------------------\n'),*/
-    labeling([], List).
-    /*print_time('LabelingTime: '),
-    fd_statistics,
-    statistics.*/
+    reset_timer,
+
+    labeling([], List),
+    print_time,
+	fd_statistics.
 
 
 /*For each element found, restrictions are applied according on the game rules*/
 /*for_element(+Board, +Size, +Row, +Column)*/
-
 /*In case it reaches the end of the board*/
 forElement(Board, Size, Row, Column) :-
     Row is Size + 1.
@@ -50,11 +43,10 @@ forElement(Board, Size, Row, Column) :-
 
     forElement(Board, Size, Row, NewColumn).    
 
-
     
 /*Each cell in the table is changed according to the restrictions implemented*/
 /*restrictions(+Board, +Row, +Column)*/
-/*In case the selected element is a decision variable*/
+/*In case the selected element is a decision variable between 9 and 10*/
 restrictions(Board, Row, Column) :-
     getElement(Board, Row, Column, Element),
 
@@ -144,109 +136,3 @@ surroundedMines(Board, Row, Column, AdjacentVariables) :-
     southWest(Board, RowPlus, ColumnSubtract, SW),
 
     append([E, W, N, S], [NE, NW, SE, SW], AdjacentVariables).
-
-
-/*Returns the respective element to the given coordinate*/
-
-/*Adjoining cell with North direction*/
-north(Board, 0, Column, 0).
-
-north(Board, Row, Column, N) :-
-    getElement(Board, Row, Column, N).
-
-
-/*Adjoining cell with South direction*/
-south(Board, Row, Column, 0) :-
-    length(Board, Size),
-    Row is Size + 1.
-
-south(Board, Row, Column, S) :-
-    getElement(Board, Row, Column, S).
-
-
-/*Adjoining cell with East direction*/
-east(Board, Row, Column, 0) :-
-    length(Board, Size),
-    Column is Size + 1.
-
-east(Board, Row, Column, E) :-
-    getElement(Board, Row, Column, E).
-
-
-/*Adjoining cell with West direction*/
-west(Board, Row, 0, 0).
-
-west(Board, Row, Column, W) :-
-    getElement(Board, Row, Column, W).
-
-
-/*Adjoining cell with North East direction*/
-northEast(Board, 0, Column, 0).
-
-northEast(Board, Row, Column, 0) :-
-    length(Board, Size),
-    Column is Size + 1.
-
-northEast(Board, 0, Column, 0) :-
-    length(Board, Size),
-    Column is Size + 1.
-
-northEast(Board, Row, Column, NE) :-
-    getElement(Board, Row, Column, NE).
-
-
-/*Adjoining cell with North West direction*/
-northWest(Board, 0, 0, 0).
-
-northWest(Board, 0, Column, 0).
-
-northWest(Board, Row, 0, 0).
-
-northWest(Board, Row, Column, NW) :-
-    getElement(Board, Row, Column, NW).
-
-
-/*Adjoining cell with South East direction*/
-southEast(Board, Row, Column, 0) :-
-    length(Board, Size),
-    Column is Size + 1.
-
-southEast(Board, Row, Column, 0) :-
-    length(Board, Size),
-    Row is Size + 1.
-
-southEast(Board, Row, Column, 0) :-
-    length(Board, Size),
-    Column is Size + 1,
-    Row is Size + 1.
-
-southEast(Board, Row, Column, SE) :-
-    getElement(Board, Row, Column, SE).
-
-
-/*Adjoining cell with South West direction*/
-southWest(Board, Row, 0, 0).
-
-southWest(Board, Row, Column, 0) :-
-    length(Board, Size),
-    Row is Size + 1.
-
-southWest(Board, Row, 0, 0) :-
-    length(Board, Size),
-    Row is Size + 1.
-
-southWest(Board, Row, Column, SW) :-
-    getElement(Board, Row, Column, SW).
-
-
-/*Materializable restrictions are used, so that the value stored in the variable Id, that corresponds to the identification of a mine, 
-occurs exactly the number of times given by Counter, which refers to the number of adjacent houses, in the AdjacentVariables list*/
-/*exacly(+Counter, +AdjacentVariables, +Id)*/
-
-exacly(Counter, [], _) :-
-    Counter = 0.
-
-exacly(Counter, [Element|AdjacentVariables], Id) :-
-    Element #= Id #<=> Bool,
-    Counter #= NewCounter + Bool,
-    exacly(NewCounter, AdjacentVariables, Id).

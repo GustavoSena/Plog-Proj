@@ -11,9 +11,11 @@ displayBoard(Board):-
 /*Prints the Board */
 /*printBoard(+Size, +CurrentLine, +ListOfRows)*/
 printBoard(Size,N,[X|L]):-
+
     M is N+1,
     write(' '),
-    write(M),
+    subsHead(M, S),
+    write(S),
     write(' |'),
     printLine(X),
     write('\n'),
@@ -79,10 +81,13 @@ printHead(Size, Size):-
 printHead(Size, Index):-
     write(' '),
     NewIndex is Index+1,
-    write(NewIndex),
+    subsHead(NewIndex, S),
+    write(S),
     write(' |'),
     printHead(Size, NewIndex).
 
+
+/*Prints the Menu*/
 printMenu :-
   write('========================================\n'),
   write('==           Dominosweeper            ==\n'),

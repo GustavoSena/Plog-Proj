@@ -20,6 +20,20 @@ subsCode(59, 11).
 subsCode(60, 12).
 subsCode(61, 13).
 
+subsHead(1,S):-S = 'A'.
+subsHead(2,S):-S = 'B'.
+subsHead(3,S):-S = 'C'.
+subsHead(4,S):-S = 'D'.
+subsHead(5,S):-S = 'E'.
+subsHead(6,S):-S = 'F'.
+subsHead(7,S):-S = 'G'.
+subsHead(8,S):-S = 'H'.
+subsHead(9,S):-S = 'I'.
+subsHead(10,S):-S = 'J'.
+subsHead(11,S):-S = 'K'.
+subsHead(12,S):-S = 'L'.
+subsHead(13,S):-S = 'M'.
+
 
 /*Initializes a list that in addition to the fixed values ​​that represent the tracks, a decision variable that can take the value 9 or 10 is assigned to the remaining elements
 9 - represents a mine
@@ -147,20 +161,33 @@ checkMine(Puzzle, Column, Row) :-
 
 
 /*-------------------------------------STATISTICS--------------------------------------*/
-reset_timer:-
-    statistics(total_runtime, _).
+reset_timer :- statistics(walltime,_).	
 
-print_time(Msg):-
-    statistics(total_runtime,[_,T]),
-    TS is ((T//10)*10)/1000, nl,
-    write(Msg), write(TS), write('s'), nl, nl.
+print_time :-
+	statistics(walltime,[_,T]),
+	TS is ((T//10)*10)/1000,
+	nl, write('Time: '), write(TS), write('s'), nl, nl.
 
 
 /*----------------------------------------BOARD----------------------------------------*/
+/*Checks if a given list has Number times the value Value*/
+/*memberN(+List, +Value, +Number)*/
 memberN(List, Value, Number) :-
     include(=(Value), List, NewList), 
     length(NewList, N),
     N >= Number.
+
+
+/*Materializable restrictions are used, so that the value stored in the variable Id, that corresponds to the identification of a mine, 
+occurs exactly the number of times given by Counter, which refers to the number of adjacent houses, in the AdjacentVariables list*/
+/*exacly(+Counter, +AdjacentVariables, +Id)*/
+exacly(Counter, [], _) :-
+    Counter = 0.
+
+exacly(Counter, [Element|AdjacentVariables], Id) :-
+    Element #= Id #<=> Bool,
+    Counter #= NewCounter + Bool,
+    exacly(NewCounter, AdjacentVariables, Id).
 
 
 /*Puts the mines at the start of the MergedList before filling with the remaining variables from List.*/
@@ -169,3 +196,95 @@ merge(List, [], List).
 
 merge([_|List], [Mine|ListMines], [Mine|MergedList]) :- 
     merge(List, ListMines, MergedList).
+
+
+/*Returns the respective element to the given coordinate*/
+/*Adjoining cell with North direction*/
+north(Board, 0, Column, 0).
+
+north(Board, Row, Column, N) :-
+    getElement(Board, Row, Column, N).
+
+
+/*Adjoining cell with South direction*/
+south(Board, Row, Column, 0) :-
+    length(Board, Size),
+    Row is Size + 1.
+
+south(Board, Row, Column, S) :-
+    getElement(Board, Row, Column, S).
+
+
+/*Adjoining cell with East direction*/
+east(Board, Row, Column, 0) :-
+    length(Board, Size),
+    Column is Size + 1.
+
+east(Board, Row, Column, E) :-
+    getElement(Board, Row, Column, E).
+
+
+/*Adjoining cell with West direction*/
+west(Board, Row, 0, 0).
+
+west(Board, Row, Column, W) :-
+    getElement(Board, Row, Column, W).
+
+
+/*Adjoining cell with North East direction*/
+northEast(Board, 0, Column, 0).
+
+northEast(Board, Row, Column, 0) :-
+    length(Board, Size),
+    Column is Size + 1.
+
+northEast(Board, 0, Column, 0) :-
+    length(Board, Size),
+    Column is Size + 1.
+
+northEast(Board, Row, Column, NE) :-
+    getElement(Board, Row, Column, NE).
+
+
+/*Adjoining cell with North West direction*/
+northWest(Board, 0, 0, 0).
+
+northWest(Board, 0, Column, 0).
+
+northWest(Board, Row, 0, 0).
+
+northWest(Board, Row, Column, NW) :-
+    getElement(Board, Row, Column, NW).
+
+
+/*Adjoining cell with South East direction*/
+southEast(Board, Row, Column, 0) :-
+    length(Board, Size),
+    Column is Size + 1.
+
+southEast(Board, Row, Column, 0) :-
+    length(Board, Size),
+    Row is Size + 1.
+
+southEast(Board, Row, Column, 0) :-
+    length(Board, Size),
+    Column is Size + 1,
+    Row is Size + 1.
+
+southEast(Board, Row, Column, SE) :-
+    getElement(Board, Row, Column, SE).
+
+
+/*Adjoining cell with South West direction*/
+southWest(Board, Row, 0, 0).
+
+southWest(Board, Row, Column, 0) :-
+    length(Board, Size),
+    Row is Size + 1.
+
+southWest(Board, Row, 0, 0) :-
+    length(Board, Size),
+    Row is Size + 1.
+
+southWest(Board, Row, Column, SW) :-
+    getElement(Board, Row, Column, SW).
